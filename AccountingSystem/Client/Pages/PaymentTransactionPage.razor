@@ -25,20 +25,36 @@
     <thead>
         <tr>
             <th>Transaction No</th>
+            <th>Contract No</th>
             <th>Added By</th>
             <th>Date</th>
             <th>Amount</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var x in PaymentTransactionsList)
-        {
-            <tr>
-                <td>@x.TransactionNo</td>
-                <td>@x.CreatedBy</td>
-                <td>@x.PaymentDate</td>
-                <td>@x.PaymentAmount</td>
-            </tr>
+        @{
+            decimal total_amount = 0;
+            foreach (var x in PaymentTransactionsList)
+            {
+                total_amount += (decimal)x.PaymentAmount.Value;
+                            <tr>
+                                <td>@x.TransactionNo</td>
+                                <td>
+                                    @{
+                        var contract_id = x.ContractId;
+                                                        <span>@ContractsList?.FirstOrDefault(s=>s.Id == contract_id).ContractNo</span>
+                                    }
+                                </td>
+                                <td>@x.CreatedBy</td>
+                                <td>@x.PaymentDate</td>
+                                <td style="text-align:right;">@x.PaymentAmount</td>
+                            </tr>
+            }
+                        <tr>
+                            <td colspan="3"></td>
+                            <td style="text-align:right; font-weight:bold;">Total</td>
+                            <td style="text-align:right;">@total_amount</td>
+                        </tr>
         }
     </tbody>
 </table>
@@ -49,6 +65,7 @@
     </WindowTitle>
     <WindowContent>
         <div class="row">
+            <div class="col-sm-12"><span><strong>Transaction No.</strong> &nbsp; @CurrentTransationNo</span></div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="">Contract No</label>
@@ -62,7 +79,7 @@
                         <ItemTemplate>
                             @{
                                 var item = context as Contract;
-                                <span>@item.ContractNo @item.BusinessName (@item.Address)</span>
+                                                <span>@item.ContractNo @item.BusinessName (@item.Address)</span>
                             }
                         </ItemTemplate>
                     </TelerikDropDownList>
@@ -95,12 +112,15 @@
                 </div>
                 <div class="form-group">
                     <label for="">Balance (TotalAmount - total amount paid so far)</label>
-                    <TelerikNumericTextBox Enabled="false" @bind-Value="@SelectedContract.TotalItem"></TelerikNumericTextBox>
+                    <TelerikTextBox Enabled="false" @bind-Value="@CurrentContractBalance"></TelerikTextBox>
                 </div>
                 <div class="form-group">
                     <label for="">Payment Amount</label>
-                    <TelerikNumericTextBox Enabled="true" @bind-Value="@SelectedPaymentTransaction.PaymentAmount"></TelerikNumericTextBox>
+                    <TelerikNumericTextBox Enabled="true" @bind-Value="@CurrentPayment.PaymentAmount"></TelerikNumericTextBox>
                 </div>
+            </div>
+            <div class="col-sm-12">
+                <button style="width: 25%; margin-left: 75%;" class="btn btn-block btn-success btn-sm mt-3 offset-6" @onclick="SavePayment">Save</button>
             </div>
         </div>
     </WindowContent>

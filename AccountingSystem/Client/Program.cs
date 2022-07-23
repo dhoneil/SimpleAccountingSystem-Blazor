@@ -14,6 +14,7 @@ builder.Services.AddScoped(sp => http);
 
 builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<IPaymentTransactionService, PaymentTransactionService>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
 
 

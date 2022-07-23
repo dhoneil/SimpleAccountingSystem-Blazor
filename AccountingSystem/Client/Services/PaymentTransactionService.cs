@@ -1,6 +1,6 @@
 ﻿using AccountingSystem.Shared.Models;
 using AccountingSystem.Shared.Utility;
-
+using System.Net.Http.Json;
 
 namespace AccountingSystem.Client.Services
 {
@@ -26,8 +26,9 @@ namespace AccountingSystem.Client.Services
 
         public async Task<bool> CreatePaymentTransaction(PaymentTransaction entity)
         {
-            var result = await ApiWrapper.Post<bool>($"{_http.BaseAddress.AbsoluteUri}api/PaymentTransaction/createPaymentTransaction", entity);
-            return result;
+            //var result = await ApiWrapper.Post<bool>($"{_http.BaseAddress.AbsoluteUri}api/PaymentTransaction/createPaymentTransaction", entity);
+            var result = await _http.PostAsJsonAsync("api/paymenttransaction/createpaymenttransaction", entity);
+            return result.IsSuccessStatusCode;
         }
 
         public async Task<bool> UpdatePaymentTransaction(PaymentTransaction entity)

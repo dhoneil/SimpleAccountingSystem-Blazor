@@ -5,13 +5,17 @@
 
 <TelerikGrid Data="ContractsList" AutoGenerateColumns="false" EditMode="GridEditMode.Inline" OnCreate="CreateHandler" OnUpdate="UpdateHandler">
 	<GridToolBar>
-        <GridCommandButton Command="Add" Icon="add" Primary="true">Add Item</GridCommandButton>
+        <GridCommandButton OnClick="GenerateContractNo" Command="Add" Icon="add" Primary="true">Add Item</GridCommandButton>
         <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
         <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
     </GridToolBar>
     <GridColumns>
-        <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.ContractNo))" Title="ContractNo" Locked="true" />
-        <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.BusinessName))" Title="Business Name" Locked="true" />
+        <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.ContractNo))" Title="Contract #" Locked="true">
+            <EditorTemplate>
+                <TelerikTextBox @bind-Value="CurrentContractNo"></TelerikTextBox>
+            </EditorTemplate>
+        </GridColumn>
+        <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.BusinessName))" Title="Renter" Locked="true" />
         <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.Address))" Title="Address" />
         <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.ContactPerson))" Title="Contact Person" />
         <GridColumn Field="@(nameof(AccountingSystem.Shared.Models.Contract.ContactNo))" Title="Contact No" />

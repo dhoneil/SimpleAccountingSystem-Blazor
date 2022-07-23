@@ -58,5 +58,12 @@ namespace AccountingSystem.Server.Controllers
             var res = await _context.Contracts.FirstOrDefaultAsync(s => s.Id == id);
             return res;
         }
+
+        [HttpGet, Route("api/contract/GetTotalPaidSoFar/{contractid}")]
+        public async Task<string> GetTotalPaidSoFar(int contractid)
+        {
+            var res = await _context.PaymentTransactions.Where(s => s.ContractId == contractid).SumAsync(s => s.PaymentAmount);
+            return res.ToString();
+        }
     }
 }

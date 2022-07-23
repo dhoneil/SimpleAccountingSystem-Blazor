@@ -23,18 +23,21 @@ namespace AccountingSystem.Server.Controllers
         }
 
         [HttpPost, Route("api/PaymentTransaction/createPaymentTransaction")]
-        public async Task<IActionResult> CreatePaymentTransaction([FromBody] PaymentTransaction entity)
+        public async Task<bool> CreatePaymentTransaction([FromBody] PaymentTransaction entity)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
+            //if (!ModelState.IsValid)
+            //    return BadRequest("Invalid data.");
 
-            await _context.AddAsync(entity);
+            //await _context.PaymentTransactions.AddAsync(entity);
+            //var res = await _context.SaveChangesAsync();
+
+            //if (res != 1)
+            //    return BadRequest("Failed during inserting to database");
+
+            //return Ok(res);
+            await _context.PaymentTransactions.AddAsync(entity);
             var res = await _context.SaveChangesAsync();
-
-            if (res != 1)
-                return BadRequest("Failed during inserting to database");
-
-            return Ok(res);
+            return res == 0 ? false : true;
         }
 
         [HttpPut, Route("api/PaymentTransaction/updatePaymentTransaction")]

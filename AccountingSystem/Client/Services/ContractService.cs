@@ -9,6 +9,7 @@ namespace AccountingSystem.Client.Services
         Task<bool> UpdateContract(Contract entity);
         Task<List<Contract>> GetContractsAsync();
         Task<Contract> GetDetails(int id);
+        Task<string> GetTotalPaidSoFar(int contractid);
     }
 
     public class ContractService : IContractService
@@ -39,6 +40,12 @@ namespace AccountingSystem.Client.Services
         public async Task<Contract> GetDetails(int id)
         {
             var res = await ApiWrapper.Get<Contract>($"{_http.BaseAddress.AbsoluteUri}api/contract/getdetails/{id}");
+            return res;
+        }
+
+        public async Task<string> GetTotalPaidSoFar(int contractid)
+        {
+            var res = await _http.GetStringAsync($"api/contract/GetTotalPaidSoFar/{contractid}");
             return res;
         }
     }

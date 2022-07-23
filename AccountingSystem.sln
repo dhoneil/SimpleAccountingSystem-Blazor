@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingSystem.Server", "AccountingSystem\Server\AccountingSystem.Server.csproj", "{8CCB508B-3161-41F0-89A0-7F7C710039A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingSystem.Server", "AccountingSystem\Server\AccountingSystem.Server.csproj", "{8CCB508B-3161-41F0-89A0-7F7C710039A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingSystem.Client", "AccountingSystem\Client\AccountingSystem.Client.csproj", "{1E9F9C69-9884-48ED-89B3-ED4A3FED06CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingSystem.Client", "AccountingSystem\Client\AccountingSystem.Client.csproj", "{1E9F9C69-9884-48ED-89B3-ED4A3FED06CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingSystem.Shared", "AccountingSystem\Shared\AccountingSystem.Shared.csproj", "{7DC175A6-59CD-4A83-9B75-105ABC7A84D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingSystem.Shared", "AccountingSystem\Shared\AccountingSystem.Shared.csproj", "{7DC175A6-59CD-4A83-9B75-105ABC7A84D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

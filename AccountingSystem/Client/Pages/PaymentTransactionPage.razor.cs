@@ -13,7 +13,11 @@ namespace AccountingSystem.Client.Pages
         public List<PaymentTransaction> PaymentTransactionsList { get; set; } = new();
         public bool IsPaymentFormModelVisible { get; set; } = false;
         public Contract SelectedContract { get; set; } = new();
-        public PaymentTransaction SelectedPaymentTransaction { get; set; } = new();
+        public PaymentTransaction CurrentPayment { get; set; } = new();
+        public Random Random { get; set; } = new();
+        public string CurrentTransationNo { get; set; } = string.Empty;
+
+        public string CurrentContractBalance { get; set; } = string.Empty;
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -39,8 +43,20 @@ namespace AccountingSystem.Client.Pages
             await PaymentTransactionService.UpdatePaymentTransaction(entity);
         }
 
+        public void GenerateTransactionNo()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var res = new string(Enumerable.Repeat(chars, 13)
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
+            CurrentTransationNo = res;
+        }
+
         public async Task AddNewPayment()
         {
+            SelectedContract = new();
+            CurrentPayment = new();
+            CurrentContractBalance = string.Empty;
+            GenerateTransactionNo();
             IsPaymentFormModelVisible = true;
         }
 
@@ -48,7 +64,24 @@ namespace AccountingSystem.Client.Pages
         {
             var selectedcontract = Convert.ToInt32(contractid);
             var res = await ContractService.GetDetails(selectedcontract);
+
+            var totalpaidsofar = await ContractService.GetTotalPaidSoFar(selectedcontract);
+
             SelectedContract = res;
+            CurrentContractBalance = Convert.ToString(SelectedContract.TotalAmount - decimal.Parse(totalpaidsofar));
+        }
+
+        public async Task SavePayment()
+        {
+            CurrentPayment.ContractId = SelectedContract.Id;
+            CurrentPayment.TransactionNo = CurrentTransationNo;
+            CurrentPayment.PaymentDate = DateTime.Now;
+            var res = await PaymentTransactionService.CreatePaymentTransaction(CurrentPayment);
+
+            CurrentTransationNo = string.Empty;
+            IsPaymentFormModelVisible = false;
+            SelectedContract = new();
+            await LoadData();
         }
     }
 }
