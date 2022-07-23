@@ -2,6 +2,52 @@
 
 <h3>Expenses</h3>
 
-@code {
+<button class="btn btn-success mb-3 btn-sm" @onclick="AddNewExpense">+ New Expense</button>
+<table class="table table-responsive-sm table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Transaction No.</th>
+            <th>Contract No.</th>
+            <th>Description</th>
+            <th>Expense Code - Payable To</th>
+            <th>Amount</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
 
-}
+    </tbody>
+    </table>
+
+    <TelerikWindow Modal="true" @bind-Visible="@IsExpenseModalVisible" CloseOnOverlayClick="true" Width="60%">
+        <WindowTitle>
+            New Expense
+        </WindowTitle>
+        <WindowContent>
+            <div class="row">
+                <div class="form-group">
+                    <label for="">Transaction No</label>
+                    <input type="text" @bind-value="CurrentTransactionNo" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="">Contract</label>
+                    <TelerikDropDownList Data="ContractList" @bind-Value="SelectedContract.Id" OnChange="OnChangeContract" ValueField="@nameof(Contract.Id)"
+                        TextField="@nameof(Contract.ContractNo)" DefaultText="Select Contract" Filterable="true">
+                            <ItemTemplate>
+                                @{
+                                    var item = context as Contract;
+                                    <span>@item.ContractNo @item.BusinessName (@item.Address)</span>
+                                }
+                            </ItemTemplate>
+                    </TelerikDropDownList>
+                </div>
+                <div class="form-group">
+                    <label for="">Description</label>
+                    <input type="text" class="form-control" @bind-value="SelectedContract.ItemDescription">
+                </div>
+            </div>
+        </WindowContent>
+        <WindowActions>
+            <WindowAction Name="Close" OnClick="@(()=>IsExpenseModalVisible = false)" />
+        </WindowActions>
+    </TelerikWindow>
