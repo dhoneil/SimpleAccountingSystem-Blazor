@@ -17,8 +17,13 @@ namespace AccountingSystem.Server.DataAccess
         {
         }
 
+        public virtual DbSet<Branch> Branches { get; set; } = null!;
+        public virtual DbSet<Brand> Brands { get; set; } = null!;
         public virtual DbSet<Contract> Contracts { get; set; } = null!;
         public virtual DbSet<Expense> Expenses { get; set; } = null!;
+        public virtual DbSet<Item> Items { get; set; } = null!;
+        public virtual DbSet<Location> Locations { get; set; } = null!;
+        public virtual DbSet<PartNumber> PartNumbers { get; set; } = null!;
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -67,6 +72,38 @@ namespace AccountingSystem.Server.DataAccess
                     .WithMany(p => p.PaymentTransactions)
                     .HasForeignKey(d => d.ContractId)
                     .HasConstraintName("FK_PaymentTransaction_Contract");
+            });
+
+            modelBuilder.Entity<Branch>(entity =>
+            {
+                entity.ToTable("Branch");
+            });
+
+            modelBuilder.Entity<Brand>(entity =>
+            {
+                entity.ToTable("Brand");
+            });
+
+            modelBuilder.Entity<Item>(entity =>
+            {
+                entity.ToTable("Item");
+
+                entity.HasOne(d => d.PartNumber)
+                    .WithMany(p => p.Items)
+                    .HasForeignKey(d => d.PartNumberId)
+                    .HasConstraintName("FK_Item_PartNumber");
+            });
+
+            modelBuilder.Entity<Location>(entity =>
+            {
+                entity.ToTable("Location");
+            });
+
+            modelBuilder.Entity<PartNumber>(entity =>
+            {
+                entity.ToTable("PartNumber");
+
+                entity.Property(e => e.PartNumber1).HasColumnName("PartNumber");
             });
 
             OnModelCreatingPartial(modelBuilder);

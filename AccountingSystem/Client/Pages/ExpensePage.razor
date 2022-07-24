@@ -14,9 +14,15 @@
             <th>Remarks</th>
         </tr>
     </thead>
-    <tbody>
-
-    </tbody>
+    @*<tbody>
+        @foreach (var item in Customers)
+        {
+            <tr>
+                <td>@item.customer_id</td>
+                <td>@item.user_id</td>
+            </tr>
+        }
+    </tbody>*@
     </table>
 
     <TelerikWindow Modal="true" @bind-Visible="@IsExpenseModalVisible" CloseOnOverlayClick="true" Width="60%">

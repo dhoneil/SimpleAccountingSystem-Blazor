@@ -1,0 +1,62 @@
+﻿@page "/Locations"
+
+<h3>Locations</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Location</button>
+
+@*<table id="locationtable" class="table table-responsive-sm table-striped table-bordered">
+    <thead style="background-color:#3c8dbc; color:white;">
+        <tr>
+            <th>Location</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var x in Locations)
+            {
+				<tr>
+					<td>@x.LocationName</td>
+					<td>
+						<button class="btn btn-primary btn-sm" @onclick="@(()=>EditLocation(x.LocationId))">Edit</button>
+					</td>
+				</tr>
+            }
+        }
+    </tbody>
+</table>*@
+
+<TelerikGrid Data="Locations" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(Location.LocationName))" Title="Location" Locked="true" />
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditLocation" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="locationmodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentLocation.LocationId > 0 ? "Edit" : "+ New") Location</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>Location Name</label>
+					<input type="text" class="form-control" @bind-value="CurrentLocation.LocationName" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveLocation">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

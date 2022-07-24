@@ -2,6 +2,7 @@ using AccountingSystem.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using AccountingSystem.Client.Services;
+using ClassLibrary;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -15,6 +16,9 @@ builder.Services.AddScoped(sp => http);
 builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<IPaymentTransactionService, PaymentTransactionService>();
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddSingleton<IDataAccess, DataAccess>();
 
 
 

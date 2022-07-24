@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 //setup database connection
-var CONNECTIONSTRING = builder.Configuration.GetConnectionString("aquipcebuconnection");
+var CONNECTIONSTRING = builder.Configuration.GetConnectionString("asuslaptopconnection");
 builder.Services.AddDbContext<accounting_systemContext>(options => options.UseSqlServer(CONNECTIONSTRING),ServiceLifetime.Transient);
 
 builder.Services.AddTelerikBlazor();
