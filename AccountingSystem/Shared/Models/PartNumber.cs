@@ -11,7 +11,7 @@ namespace AccountingSystem.Shared.Models
         }
 
         public int PartNumberId { get; set; }
-        public string? PartNumber1 { get; set; }
+        public string? PartNumberName { get; set; }
         public string? PartNumberSuffix { get; set; }
         public bool? IsActive { get; set; }
 

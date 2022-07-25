@@ -1,0 +1,40 @@
+﻿@page "/PartNumbers"
+
+<h3>PartNumbers</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add PartNumber</button>
+
+<TelerikGrid Data="PartNumbers" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(PartNumber.PartNumberName))" Title="PartNumber" Locked="true" />
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="PartNumbermodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentPartNumber.PartNumberId > 0 ? "Edit" : "+ New") PartNumber</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>PartNumber Name</label>
+					<input type="text" class="form-control" @bind-value="CurrentPartNumber.PartNumberName" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

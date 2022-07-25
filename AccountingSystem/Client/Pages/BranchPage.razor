@@ -1,0 +1,40 @@
+﻿@page "/Branches"
+
+<h3>Branches</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Branch</button>
+
+<TelerikGrid Data="Branches" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(Branch.BranchName))" Title="Branch" Locked="true" />
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="branchmodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentBranch.BranchId > 0 ? "Edit" : "+ New") Branch</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>Branch Name</label>
+					<input type="text" class="form-control" @bind-value="CurrentBranch.BranchName" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,40 @@
+﻿@page "/Brands"
+
+<h3>Brands</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Brand</button>
+
+<TelerikGrid Data="Brands" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(Brand.BrandName))" Title="Brand" Locked="true" />
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="Brandmodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentBrand.BrandId > 0 ? "Edit" : "+ New") Brand</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>Brand Name</label>
+					<input type="text" class="form-control" @bind-value="CurrentBrand.BrandName" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

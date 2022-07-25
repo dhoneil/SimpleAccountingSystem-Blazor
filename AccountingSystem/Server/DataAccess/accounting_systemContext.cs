@@ -17,12 +17,12 @@ namespace AccountingSystem.Server.DataAccess
         {
         }
 
-        public virtual DbSet<Branch> Branches { get; set; } = null!;
-        public virtual DbSet<Brand> Brands { get; set; } = null!;
+        public virtual DbSet<Branch> Branches { get; set; } = null!; //
+        public virtual DbSet<Brand> Brands { get; set; } = null!;//
         public virtual DbSet<Contract> Contracts { get; set; } = null!;
         public virtual DbSet<Expense> Expenses { get; set; } = null!;
         public virtual DbSet<Item> Items { get; set; } = null!;
-        public virtual DbSet<Location> Locations { get; set; } = null!;
+        public virtual DbSet<Location> Locations { get; set; } = null!;//
         public virtual DbSet<PartNumber> PartNumbers { get; set; } = null!;
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; } = null!;
 
@@ -103,7 +103,7 @@ namespace AccountingSystem.Server.DataAccess
             {
                 entity.ToTable("PartNumber");
 
-                entity.Property(e => e.PartNumber1).HasColumnName("PartNumber");
+                entity.Property(e => e.PartNumberName).HasColumnName("PartNumberName");
             });
 
             OnModelCreatingPartial(modelBuilder);
