@@ -27,11 +27,11 @@
 				<h4 class="modal-title">@(CurrentPartNumber.PartNumberId > 0 ? "Edit" : "+ New") PartNumber</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
+				<div class="form-group @(IsValidSubmit ? "" : "has-error")">
 					<label>PartNumber Name</label>
 					<input type="text" class="form-control" @bind-value="CurrentPartNumber.PartNumberName" />
 				</div>
-				<div class="form-group">
+				<div class="form-group @(IsValidSubmit ? "" : "has-error")">
 					<label>Suffix</label>
 					<input type="text" class="form-control" @bind-value="CurrentPartNumber.PartNumberSuffix" />
 				</div>

@@ -48,7 +48,7 @@
 				<h4 class="modal-title">@(CurrentLocation.LocationId > 0 ? "Edit" : "+ New") Location</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
+				<div class="form-group @(IsValidSubmit ? "" : "has-error")">
 					<label>Location Name</label>
 					<input type="text" class="form-control" @bind-value="CurrentLocation.LocationName" />
 				</div>

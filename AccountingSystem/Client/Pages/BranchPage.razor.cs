@@ -12,6 +12,7 @@ namespace AccountingSystem.Client.Pages
         [Inject] IBranchService BranchService { get; set; } = null!;
         public List<Branch> Branches { get; set; } = new();
         public Branch CurrentBranch { get; set; } = new();
+        public bool IsValidSubmit { get; set; } = true;
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -29,24 +30,43 @@ namespace AccountingSystem.Client.Pages
 
         public async Task AddNewLocation()
         {
+            IsValidSubmit = true;
             CurrentBranch = new();
             await ModalAction("show");
         }
 
         public async Task SaveItem()
         {
-            if (CurrentBranch.BranchId > 0)
+            if (String.IsNullOrEmpty(CurrentBranch.BranchName))
             {
-                await BranchService.UpdateItem(CurrentBranch);
+                IsValidSubmit = false;
+            }
+            else if (Branches.Where(s => s.BranchName == CurrentBranch.BranchName).ToList().Count() > 0)
+            {
+                IsValidSubmit = false;
             }
             else
             {
-                await BranchService.CreateItem(CurrentBranch);
+                IsValidSubmit=true;
             }
 
-            CurrentBranch = new();
-            await LoadData();
-            await ModalAction("hide");
+            if (IsValidSubmit)
+            {
+                if (CurrentBranch.BranchId > 0)
+                {
+                    await BranchService.UpdateItem(CurrentBranch);
+                }
+                else
+                {
+                    await BranchService.CreateItem(CurrentBranch);
+                }
+
+                CurrentBranch = new();
+                await LoadData();
+                await ModalAction("hide");
+            }
+
+            StateHasChanged();
         }
 
         public async Task EditItem(GridCommandEventArgs args)

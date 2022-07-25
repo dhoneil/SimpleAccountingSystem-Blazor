@@ -2,7 +2,7 @@
 
 <h3>Brands</h3>
 
-<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Brand</button>
+<button class="btn btn-success margin-bottom" @onclick="AddNewBrand">+ Add Brand</button>
 
 <TelerikGrid Data="Brands" AutoGenerateColumns="false">
 	<GridToolBar>
@@ -26,7 +26,7 @@
 				<h4 class="modal-title">@(CurrentBrand.BrandId > 0 ? "Edit" : "+ New") Brand</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
+				<div class="form-group @(IsValidSubmit ? "" : "has-error")">
 					<label>Brand Name</label>
 					<input type="text" class="form-control" @bind-value="CurrentBrand.BrandName" />
 				</div>

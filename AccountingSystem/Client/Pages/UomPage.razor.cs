@@ -12,6 +12,7 @@ namespace AccountingSystem.Client.Pages
         [Inject] IUomService UomService { get; set; } = null!;
         public List<Uom> Uoms { get; set; } = new();
         public Uom CurrentUom { get; set; } = new();
+        public bool IsValidSubmit { get; set; } = true;
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -29,24 +30,42 @@ namespace AccountingSystem.Client.Pages
 
         public async Task AddNewLocation()
         {
+            IsValidSubmit = true;
             CurrentUom = new();
             await ModalAction("show");
         }
 
         public async Task SaveItem()
         {
-            if (CurrentUom.UomId > 0)
+            if (String.IsNullOrEmpty(CurrentUom.UomName))
             {
-                await UomService.UpdateItem(CurrentUom);
+                IsValidSubmit = false;
+            }
+            else if (Uoms.Where(s => s.UomName == CurrentUom.UomName).ToList().Count() > 0)
+            {
+                IsValidSubmit = false;
             }
             else
             {
-                await UomService.CreateItem(CurrentUom);
+                IsValidSubmit = true;
             }
 
-            CurrentUom = new();
-            await LoadData();
-            await ModalAction("hide");
+
+            if (IsValidSubmit)
+            {
+                if (CurrentUom.UomId > 0)
+                {
+                    await UomService.UpdateItem(CurrentUom);
+                }
+                else
+                {
+                    await UomService.CreateItem(CurrentUom);
+                }
+
+                CurrentUom = new();
+                await LoadData();
+                await ModalAction("hide");
+            }
         }
 
         public async Task EditItem(GridCommandEventArgs args)

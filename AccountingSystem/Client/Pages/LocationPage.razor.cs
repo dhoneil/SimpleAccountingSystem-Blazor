@@ -12,6 +12,7 @@ namespace AccountingSystem.Client.Pages
         [Inject] ILocationService LocationService { get; set; } = null!;
         public List<Location> Locations { get; set; } = new();
         public Location CurrentLocation { get; set; } = new();
+        public bool IsValidSubmit { get; set; } = true;
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -29,24 +30,41 @@ namespace AccountingSystem.Client.Pages
 
         public async Task AddNewLocation()
         {
+            IsValidSubmit = true;
             CurrentLocation = new();
             await ModalAction("show");
         }
 
         public async Task SaveLocation()
         {
-            if (CurrentLocation.LocationId > 0)
+            if (String.IsNullOrEmpty(CurrentLocation.LocationName))
             {
-                await LocationService.UpdateLocation(CurrentLocation);
+                IsValidSubmit = false;
+            }
+            else if (Locations.Where(s => s.LocationName == CurrentLocation.LocationName).ToList().Count() > 0)
+            {
+                IsValidSubmit = false;
             }
             else
             {
-                await LocationService.CreateLocation(CurrentLocation);
+                IsValidSubmit = true;
             }
 
-            CurrentLocation = new();
-            await LoadData();
-            await ModalAction("hide");
+            if (IsValidSubmit)
+            {
+                if (CurrentLocation.LocationId > 0)
+                {
+                    await LocationService.UpdateLocation(CurrentLocation);
+                }
+                else
+                {
+                    await LocationService.CreateLocation(CurrentLocation);
+                }
+
+                CurrentLocation = new();
+                await LoadData();
+                await ModalAction("hide");
+            }
         }
 
         public async Task EditLocation(GridCommandEventArgs args)

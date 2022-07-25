@@ -12,6 +12,7 @@ namespace AccountingSystem.Client.Pages
         [Inject] IPartNumberService PartNumberService { get; set; } = null!;
         public List<PartNumber> PartNumbers { get; set; } = new();
         public PartNumber CurrentPartNumber { get; set; } = new();
+        public bool IsValidSubmit { get; set; } = true;
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -29,24 +30,41 @@ namespace AccountingSystem.Client.Pages
 
         public async Task AddNewLocation()
         {
+            IsValidSubmit = true;
             CurrentPartNumber = new();
             await ModalAction("show");
         }
 
         public async Task SaveItem()
         {
-            if (CurrentPartNumber.PartNumberId > 0)
+            if (String.IsNullOrEmpty(CurrentPartNumber.PartNumberName))
             {
-                await PartNumberService.UpdateItem(CurrentPartNumber);
+                IsValidSubmit = false;
+            }
+            else if (PartNumbers.Where(s => s.PartNumberName == CurrentPartNumber.PartNumberName && s.PartNumberSuffix == CurrentPartNumber.PartNumberSuffix).ToList().Count() > 0)
+            {
+                IsValidSubmit = false;
             }
             else
             {
-                await PartNumberService.CreateItem(CurrentPartNumber);
+                IsValidSubmit = true;
             }
 
-            CurrentPartNumber = new();
-            await LoadData();
-            await ModalAction("hide");
+            if (IsValidSubmit)
+            {
+                if (CurrentPartNumber.PartNumberId > 0)
+                {
+                    await PartNumberService.UpdateItem(CurrentPartNumber);
+                }
+                else
+                {
+                    await PartNumberService.CreateItem(CurrentPartNumber);
+                }
+
+                CurrentPartNumber = new();
+                await LoadData();
+                await ModalAction("hide");
+            }
         }
 
         public async Task EditItem(GridCommandEventArgs args)
