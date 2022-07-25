@@ -1,39 +1,34 @@
-﻿@page "/PartNumbers"
+﻿@page "/Uoms"
 
-<h3>PartNumbers</h3>
+<h3>Uoms</h3>
 
-<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add PartNumber</button>
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Uom</button>
 
-<TelerikGrid Data="PartNumbers" AutoGenerateColumns="false">
+<TelerikGrid Data="Uoms" AutoGenerateColumns="false">
 	<GridToolBar>
         <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
         <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
     </GridToolBar>
 	<GridColumns>
-        <GridColumn Field="@(nameof(PartNumber.PartNumberName))" Title="PartNumber" Locked="true" />
-        <GridColumn Field="@(nameof(PartNumber.PartNumberSuffix))" Title="Suffix" Locked="true" />
+        <GridColumn Field="@(nameof(Uom.UomName))" Title="Uom" Locked="true" />
         <GridCommandColumn Width="150px" Locked="true" Title="Action">
             <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
         </GridCommandColumn>
     </GridColumns>
 </TelerikGrid>
 
-<div class="modal fade" id="PartNumbermodal">
+<div class="modal fade" id="Uommodal">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">×</span></button>
-				<h4 class="modal-title">@(CurrentPartNumber.PartNumberId > 0 ? "Edit" : "+ New") PartNumber</h4>
+				<h4 class="modal-title">@(CurrentUom.UomId > 0 ? "Edit" : "+ New") Uom</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label>PartNumber Name</label>
-					<input type="text" class="form-control" @bind-value="CurrentPartNumber.PartNumberName" />
-				</div>
-				<div class="form-group">
-					<label>Suffix</label>
-					<input type="text" class="form-control" @bind-value="CurrentPartNumber.PartNumberSuffix" />
+					<label>Uom Name</label>
+					<input type="text" class="form-control" @bind-value="CurrentUom.UomName" />
 				</div>
 			</div>
 			<div class="modal-footer">
