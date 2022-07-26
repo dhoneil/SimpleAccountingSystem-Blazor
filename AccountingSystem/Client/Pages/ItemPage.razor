@@ -1,0 +1,108 @@
+﻿@page "/Items"
+
+<h3>Items</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Item</button>
+
+<TelerikGrid Data="Items" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(Item.ItemCode))" Title="ItemCode" Locked="true" />
+        <GridColumn Field="@(nameof(Item.ItemDescription))" Title="ItemDescription" Locked="true" />
+        <GridColumn Field="@(nameof(Item.Qty))" Title="Qty" Locked="true" />
+        <GridColumn Field="@(nameof(Item.Price))" Title="Price" Locked="true" />
+        <GridColumn Field="@(nameof(Item.UnitCost))" Title="UnitCost" Locked="true" />
+        <GridColumn Field="@(nameof(Item.PartNumber.PartNumberName))" Title="PartNumberName" Locked="true" >
+			<Template>
+				@{
+					var pn = context as Item;
+					var PartNumberName = PartNumbers.FirstOrDefault(s => s.PartNumberId == pn.PartNumberId)?.PartNumberName;
+					var PartNumberSuffix = PartNumbers.FirstOrDefault(s => s.PartNumberId == pn.PartNumberId)?.PartNumberSuffix;
+					<span>@PartNumberName - [Suffix]&nbsp;@PartNumberSuffix</span>
+				}
+			</Template>
+		</GridColumn>
+		<GridColumn Field="@(nameof(Item.Uom.UomName))" Title="UomName" Locked="true" >
+			<Template>
+				@{
+					var uom = context as Item;
+					var UomName = Uoms.FirstOrDefault(s => s.UomId == uom.UomId)?.UomName;
+					<span>@UomName</span>
+				}
+			</Template>
+		</GridColumn>
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="Itemmodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentItem.ItemId > 0 ? "Edit" : "+ New") Item</h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-sm-12">
+					<div class="form-group col-sm-6">
+						<label>Part Number</label>
+						<select class="form-control select2">
+							<option value="">[SELECT]</option>
+							@foreach (var item in PartNumbers)
+							{
+								<option value="@item.PartNumberId">@item.PartNumberName - [Suffix] @item.PartNumberSuffix</option>
+							}
+						</select>
+					</div>
+					<div class="form-group col-sm-6">
+						<label>UOM</label>
+						<select class="form-control select2">
+							<option value="">[SELECT]</option>
+							@foreach (var item in Uoms)
+							{
+								<option value="@item.UomId">@item.UomName</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>Item Code</label>
+						<input type="text" class="form-control" @bind-value="CurrentItem.ItemCode" />
+					</div>
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>Item Description</label>
+						<input type="text" class="form-control" @bind-value="CurrentItem.ItemDescription" />
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+					<label>Price</label>
+					<input type="number" class="form-control" @bind-value="CurrentItem.Price" />
+					</div>
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>Unit Cost</label>
+						<input type="number" class="form-control" @bind-value="CurrentItem.UnitCost" />
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-6"></div>
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>QTY</label>
+						<input type="number" class="form-control" @bind-value="CurrentItem.Qty" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
