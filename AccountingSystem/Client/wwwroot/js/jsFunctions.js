@@ -1,5 +1,4 @@
 ﻿(function () {
-
     window.triggerClick = function (elt) {
         document.getElementById(elt).click()
     },

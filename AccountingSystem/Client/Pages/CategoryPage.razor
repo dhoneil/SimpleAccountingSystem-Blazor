@@ -1,0 +1,40 @@
+﻿@page "/Categories"
+
+<h3>Categories</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Category</button>
+
+<TelerikGrid Data="Categorys" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(Category.CategoryName))" Title="Category" Locked="true" />
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="Categorymodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentCategory.CategoryId > 0 ? "Edit" : "+ New") Category</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group @(IsValidSubmit ? "" : "has-error")">
+					<label>CategoryName</label>
+					<input type="text" class="form-control" @bind-value="CurrentCategory.CategoryName" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

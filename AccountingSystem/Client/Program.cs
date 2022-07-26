@@ -21,6 +21,8 @@ builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IPartNumberService, PartNumberService>();
 builder.Services.AddScoped<IUomService, UomService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 
 builder.Services.AddScoped<IDataService, DataService>();

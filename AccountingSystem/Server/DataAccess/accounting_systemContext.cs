@@ -19,12 +19,15 @@ namespace AccountingSystem.Server.DataAccess
 
         public virtual DbSet<Branch> Branches { get; set; } = null!;
         public virtual DbSet<Brand> Brands { get; set; } = null!;
+        public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Contract> Contracts { get; set; } = null!;
         public virtual DbSet<Expense> Expenses { get; set; } = null!;
         public virtual DbSet<Item> Items { get; set; } = null!;
         public virtual DbSet<Location> Locations { get; set; } = null!;
         public virtual DbSet<PartNumber> PartNumbers { get; set; } = null!;
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; } = null!;
+        public virtual DbSet<ReceivedItem> ReceivedItems { get; set; } = null!;
+        public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
         public virtual DbSet<Uom> Uoms { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,7 +35,7 @@ namespace AccountingSystem.Server.DataAccess
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=AQUIP-CEBU;Initial Catalog=accounting_system;Persist Security Info=False;User ID=sa;Password=Hello@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-OVUJU65;Initial Catalog=accounting_system;Persist Security Info=False;User ID=sa;Password=123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
             }
         }
 
@@ -50,6 +53,11 @@ namespace AccountingSystem.Server.DataAccess
                 entity.ToTable("Brand");
 
                 entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.ToTable("Category");
             });
 
             modelBuilder.Entity<Contract>(entity =>
@@ -81,9 +89,19 @@ namespace AccountingSystem.Server.DataAccess
 
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.ReorderPoint).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.UnitCost).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Brand)
+                    .WithMany(p => p.Items)
+                    .HasForeignKey(d => d.BrandId)
+                    .HasConstraintName("FK_Item_Brand");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Items)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("FK_Item_Category");
 
                 entity.HasOne(d => d.PartNumber)
                     .WithMany(p => p.Items)
@@ -101,6 +119,11 @@ namespace AccountingSystem.Server.DataAccess
                 entity.ToTable("Location");
 
                 entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Locations)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("FK_Location_Category");
             });
 
             modelBuilder.Entity<PartNumber>(entity =>
@@ -122,6 +145,39 @@ namespace AccountingSystem.Server.DataAccess
                     .WithMany(p => p.PaymentTransactions)
                     .HasForeignKey(d => d.ContractId)
                     .HasConstraintName("FK_PaymentTransaction_Contract");
+            });
+
+            modelBuilder.Entity<ReceivedItem>(entity =>
+            {
+                entity.ToTable("ReceivedItem");
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.DateReceived).HasColumnType("datetime");
+
+                entity.Property(e => e.InvoiceNo).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.QtyReceived).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.ReceivedItems)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_ReceivedItem_Item");
+
+                entity.HasOne(d => d.Location)
+                    .WithMany(p => p.ReceivedItems)
+                    .HasForeignKey(d => d.LocationId)
+                    .HasConstraintName("FK_ReceivedItem_Location");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.ReceivedItems)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK_ReceivedItem_Supplier");
+            });
+
+            modelBuilder.Entity<Supplier>(entity =>
+            {
+                entity.ToTable("Supplier");
             });
 
             modelBuilder.Entity<Uom>(entity =>

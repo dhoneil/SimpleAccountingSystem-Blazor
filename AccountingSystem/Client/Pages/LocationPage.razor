@@ -32,6 +32,15 @@
         <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
     </GridToolBar>
 	<GridColumns>
+        <GridColumn Field="@(nameof(Location.Category.CategoryName))" Title="Category" Locked="true" >
+			<Template>
+				@{
+					var item = context as Location;
+					var categoryname = Categories.FirstOrDefault(s => s.CategoryId == item.CategoryId)?.CategoryName;
+					<span>@categoryname</span>
+				}
+			</Template>
+		</GridColumn>
         <GridColumn Field="@(nameof(Location.LocationName))" Title="Location" Locked="true" />
         <GridCommandColumn Width="150px" Locked="true" Title="Action">
             <GridCommandButton OnClick="EditLocation" Icon="pencil"></GridCommandButton>
@@ -48,6 +57,16 @@
 				<h4 class="modal-title">@(CurrentLocation.LocationId > 0 ? "Edit" : "+ New") Location</h4>
 			</div>
 			<div class="modal-body">
+				<div class="form-group">
+					<label>Category</label>
+					<TelerikDropDownList 
+							Data="Categories" 
+							TextField="CategoryName" 
+							ValueField="CategoryId" 
+							DefaultText="-"
+							Filterable="true"
+							@bind-Value="CurrentLocation.CategoryId"></TelerikDropDownList>
+				</div>
 				<div class="form-group @(IsValidSubmit ? "" : "has-error")">
 					<label>Location Name</label>
 					<input type="text" class="form-control" @bind-value="CurrentLocation.LocationName" />

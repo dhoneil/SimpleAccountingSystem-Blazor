@@ -1,0 +1,59 @@
+﻿@page "/Suppliers"
+
+<h3>Suppliers</h3>
+
+<button class="btn btn-success margin-bottom" @onclick="AddNewLocation">+ Add Supplier</button>
+
+<TelerikGrid Data="Suppliers" AutoGenerateColumns="false">
+	<GridToolBar>
+        <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+        <GridSearchBox DebounceDelay="200" Class="ml-auto"></GridSearchBox>
+    </GridToolBar>
+	<GridColumns>
+        <GridColumn Field="@(nameof(Supplier.SupplierName))" Title="Supplier" Locked="true" />
+        <GridColumn Field="@(nameof(Supplier.Address))" Title="Address" Locked="true" />
+        <GridColumn Field="@(nameof(Supplier.ContactPerson))" Title="ContactPerson" Locked="true" />
+        <GridColumn Field="@(nameof(Supplier.ContactNo))" Title="ContactNo" Locked="true" />
+        <GridCommandColumn Width="150px" Locked="true" Title="Action">
+            <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+<div class="modal fade" id="Suppliermodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentSupplier.SupplierId > 0 ? "Edit" : "+ New") Supplier</h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-sm-12">
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>Supplier Name</label>
+						<input type="text" class="form-control" @bind-value="CurrentSupplier.SupplierName" />
+					</div>
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>Address</label>
+						<input type="text" class="form-control" @bind-value="CurrentSupplier.Address" />
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>ContactPerson</label>
+						<input type="text" class="form-control" @bind-value="CurrentSupplier.ContactPerson" />
+					</div>
+					<div class="form-group col-sm-6 @(IsValidSubmit ? "" : "has-error")">
+						<label>ContactNo</label>
+						<input type="text" class="form-control" @bind-value="CurrentSupplier.ContactNo" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
