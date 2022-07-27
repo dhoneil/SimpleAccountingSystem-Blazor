@@ -27,6 +27,7 @@ namespace AccountingSystem.Server.DataAccess
         public virtual DbSet<PartNumber> PartNumbers { get; set; } = null!;
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; } = null!;
         public virtual DbSet<ReceivedItem> ReceivedItems { get; set; } = null!;
+        public virtual DbSet<ReceivedItemDetail> ReceivedItemDetails { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
         public virtual DbSet<Uom> Uoms { get; set; } = null!;
 
@@ -151,28 +152,36 @@ namespace AccountingSystem.Server.DataAccess
             {
                 entity.ToTable("ReceivedItem");
 
-                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
-
                 entity.Property(e => e.DateReceived).HasColumnType("datetime");
-
-                entity.Property(e => e.InvoiceNo).HasColumnType("decimal(18, 2)");
-
-                entity.Property(e => e.QtyReceived).HasColumnType("decimal(18, 2)");
-
-                entity.HasOne(d => d.Item)
-                    .WithMany(p => p.ReceivedItems)
-                    .HasForeignKey(d => d.ItemId)
-                    .HasConstraintName("FK_ReceivedItem_Item");
-
-                entity.HasOne(d => d.Location)
-                    .WithMany(p => p.ReceivedItems)
-                    .HasForeignKey(d => d.LocationId)
-                    .HasConstraintName("FK_ReceivedItem_Location");
 
                 entity.HasOne(d => d.Supplier)
                     .WithMany(p => p.ReceivedItems)
                     .HasForeignKey(d => d.SupplierId)
                     .HasConstraintName("FK_ReceivedItem_Supplier");
+            });
+
+            modelBuilder.Entity<ReceivedItemDetail>(entity =>
+            {
+                entity.ToTable("ReceivedItemDetail");
+
+                entity.Property(e => e.Cost).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.ReceivedItemDetails)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_ReceivedItemDetail_Item");
+
+                entity.HasOne(d => d.Location)
+                    .WithMany(p => p.ReceivedItemDetails)
+                    .HasForeignKey(d => d.LocationId)
+                    .HasConstraintName("FK_ReceivedItemDetail_Location");
+
+                entity.HasOne(d => d.ReceivedItem)
+                    .WithMany(p => p.ReceivedItemDetails)
+                    .HasForeignKey(d => d.ReceivedItemId)
+                    .HasConstraintName("FK_ReceivedItemDetail_ReceivedItem");
             });
 
             modelBuilder.Entity<Supplier>(entity =>

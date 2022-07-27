@@ -7,7 +7,7 @@ namespace AccountingSystem.Shared.Models
     {
         public Location()
         {
-            ReceivedItems = new HashSet<ReceivedItem>();
+            ReceivedItemDetails = new HashSet<ReceivedItemDetail>();
         }
 
         public int LocationId { get; set; }
@@ -16,6 +16,6 @@ namespace AccountingSystem.Shared.Models
         public int? CategoryId { get; set; }
 
         public virtual Category? Category { get; set; }
-        public virtual ICollection<ReceivedItem> ReceivedItems { get; set; }
+        public virtual ICollection<ReceivedItemDetail> ReceivedItemDetails { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace AccountingSystem.Client.Pages
     public partial class ItemPage : ComponentBase
     {
         [Inject] IJSRuntime JS { get; set; } = null!;
+        [Inject] IHelperService HelperService { get; set; } = null!;
         [Inject] IBrandService BrandService { get; set; } = null!;
         [Inject] ICategoryService CategoryService { get; set; } = null!;
         [Inject] IPartNumberService PartNumberService { get; set; } = null!;
@@ -37,7 +38,8 @@ namespace AccountingSystem.Client.Pages
         
         async Task ModalAction(string action)
         {
-            await JS.InvokeVoidAsync("ModalAction", "Itemmodal", action);
+            //await JS.InvokeVoidAsync("ModalAction", "Itemmodal", action);
+            await HelperService.ModalAction("Itemmodal", action);
         }
 
         public async Task AddNewLocation()

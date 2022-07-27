@@ -15,7 +15,7 @@
 				@{
 					var item = context as Item;
 					var categoryname = Categories.FirstOrDefault(s => s.CategoryId == item.CategoryId)?.CategoryName;
-					<span>@categoryname</span>
+						<span>@categoryname</span>
 				}
 			</Template>
 		</GridColumn>
@@ -24,7 +24,7 @@
 				@{
 					var item = context as Item;
 					var BrandName = Brands.FirstOrDefault(s => s.BrandId == item.BrandId)?.BrandName;
-					<span>@BrandName</span>
+						<span>@BrandName</span>
 				}
 			</Template>
 		</GridColumn>
@@ -38,7 +38,7 @@
 					var pn = context as Item;
 					var PartNumberName = PartNumbers.FirstOrDefault(s => s.PartNumberId == pn.PartNumberId)?.PartNumberName;
 					var PartNumberSuffix = PartNumbers.FirstOrDefault(s => s.PartNumberId == pn.PartNumberId)?.PartNumberSuffix;
-						<span>@PartNumberName - [Suffix]&nbsp;@PartNumberSuffix</span>
+							<span>@PartNumberName - [Suffix]&nbsp;@PartNumberSuffix</span>
 				}
 			</Template>
 		</GridColumn>
@@ -47,7 +47,7 @@
 				@{
 					var uom = context as Item;
 					var UomName = Uoms.FirstOrDefault(s => s.UomId == uom.UomId)?.UomName;
-						<span>@UomName</span>
+							<span>@UomName</span>
 				}
 			</Template>
 		</GridColumn>
@@ -70,16 +70,23 @@
 				<div class="col-sm-12">
 					<div class="form-group col-sm-6">
 						<label>Category</label>
-						<TelerikDropDownList 
-							Data="Categories" 
-							TextField="CategoryName" 
-							ValueField="CategoryId" 
-							DefaultText="-"
-							Filterable="true"
-							@bind-Value="CurrentItem.CategoryId"></TelerikDropDownList>
+						<select class="form-control select2" style="width:100%;">
+							<option value="">-</option>
+							@foreach (var x in Categories)
+							{
+								<option value="@x.CategoryId">@x.CategoryName</option>
+							}
+						</select>
 					</div>
 					<div class="form-group col-sm-6">
 						<label>Brand</label>
+						<select class="form-control select2" style="width:100%;" >
+							<option value="">-</option>
+							@foreach (var x in Brands)
+							{
+								<option value="@x.BrandId">@x.BrandName</option>
+							}
+						</select>
 						<TelerikDropDownList 
 							Data="Brands" 
 							TextField="BrandName" 

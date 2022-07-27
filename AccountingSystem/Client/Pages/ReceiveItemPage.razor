@@ -2,6 +2,55 @@
 
 <h3>Received Items</h3>
 
-@code {
+<TelerikGrid Data="ReceivedItems" AutoGenerateColumns="true">
+	<GridToolBar>
+		<GridCommandButton OnClick="AddNewReceivedItem">+ Received Item</GridCommandButton>
+	</GridToolBar>
+</TelerikGrid>
 
-}
+
+
+<div class="modal fade generalmodal" id="ReceiveItemmodal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">@(CurrentReceivedItem.ReceivedItemId > 0 ? "Edit" : "+ New") Item</h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-sm-8">
+					<div class="form-group">
+						<label >Supplier</label>
+						<select class="form-control select2" style="width: 100%;">
+							@foreach (var s in Suppliers)
+							{
+								<option value="@s.SupplierId">@s.SupplierName</option>
+							}
+						</select>
+						@*<TelerikDropDownList 
+								Data="Suppliers" 
+								@bind-Value="CurrentReceivedItem.SupplierId"
+								OnChange="OnChangeSupplier"
+								TextField="SupplierName" 
+								ValueField="SupplierId"
+								Filterable="true"></TelerikDropDownList>
+								<span>@CurrentSelectedSupplier.ContactNo</span><span>@CurrentSelectedSupplier.Address</span>*@
+					</div>
+				</div>
+				<div class="form-group">
+					<label>Trsanction No.</label>
+					<TelerikTextBox Enabled="false" @bind-Value="CurrentReceivedItem.ReceiveTransactionNo"></TelerikTextBox>
+				</div>
+				<div class="form-group">
+					<label>Invoice No.</label>
+					<TelerikTextBox Enabled="false" @bind-Value="CurrentReceivedItem.InvoiceNo"></TelerikTextBox>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

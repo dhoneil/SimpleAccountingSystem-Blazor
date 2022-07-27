@@ -1,4 +1,9 @@
 ﻿(function () {
+    window.Select2Trigger = function (modalid) {
+        $('.select2').select2({
+            dropdownParent: $(`#${modalid}`)
+        });
+    },
     window.triggerClick = function (elt) {
         document.getElementById(elt).click()
     },

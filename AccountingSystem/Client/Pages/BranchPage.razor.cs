@@ -9,6 +9,7 @@ namespace AccountingSystem.Client.Pages
     public partial class BranchPage : ComponentBase
     {
         [Inject] IJSRuntime JS { get; set; } = null!;
+        [Inject] IHelperService HelperService { get; set; } = null!;
         [Inject] IBranchService BranchService { get; set; } = null!;
         public List<Branch> Branches { get; set; } = new();
         public Branch CurrentBranch { get; set; } = new();
@@ -25,7 +26,7 @@ namespace AccountingSystem.Client.Pages
         
         async Task ModalAction(string action)
         {
-            await JS.InvokeVoidAsync("ModalAction", "branchmodal", action);
+            await HelperService.ModalAction("branchmodal",action);
         }
 
         public async Task AddNewLocation()
