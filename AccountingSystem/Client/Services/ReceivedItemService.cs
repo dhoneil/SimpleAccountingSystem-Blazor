@@ -1,0 +1,46 @@
+﻿using AccountingSystem.Shared.Models;
+using AccountingSystem.Shared.Utility;
+using System.Net.Http.Json;
+
+namespace AccountingSystem.Client.Services
+{
+    public interface IReceivedItemService
+    {
+        Task<List<ReceivedItem>> GetReceivedItems();
+        Task<bool> CreateItem(ReceivedItem entity);
+        Task<ReceivedItem> GetDetails(int id);
+        Task<bool> UpdateItem(ReceivedItem entity);
+    }
+
+    public class ReceivedItemService : IReceivedItemService
+    {
+        public readonly HttpClient _http;
+        public ReceivedItemService(HttpClient httpClient)
+        {
+            _http = httpClient;
+        }
+
+        public async Task<List<ReceivedItem>> GetReceivedItems()
+        {
+            return await ApiWrapper.Get<List<ReceivedItem>>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/getReceivedItems");
+        }
+
+        public async Task<bool> CreateItem(ReceivedItem entity)
+        {
+            var result = await _http.PostAsJsonAsync("api/ReceivedItem/create", entity);
+            return result.IsSuccessStatusCode;
+        }
+
+        public async Task<ReceivedItem> GetDetails(int id)
+        {
+            var res = await ApiWrapper.Get<ReceivedItem>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/getdetails/{id}");
+            return res;
+        }
+
+        public async Task<bool> UpdateItem(ReceivedItem entity)
+        {
+            var result = await ApiWrapper.Put<ReceivedItem>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/update", entity);
+            return result != null;
+        }
+    }
+}
