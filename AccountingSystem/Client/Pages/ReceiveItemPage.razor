@@ -19,32 +19,166 @@
 				<h4 class="modal-title">@(CurrentReceivedItem.ReceivedItemId > 0 ? "Edit" : "+ New") Item</h4>
 			</div>
 			<div class="modal-body">
-				<div class="col-sm-8">
-					<div class="form-group">
-						<label >Supplier</label>
-						<select class="form-control select2" style="width: 100%;">
-							@foreach (var s in Suppliers)
-							{
-								<option value="@s.SupplierId">@s.SupplierName</option>
-							}
-						</select>
-						@*<TelerikDropDownList 
-								Data="Suppliers" 
-								@bind-Value="CurrentReceivedItem.SupplierId"
-								OnChange="OnChangeSupplier"
-								TextField="SupplierName" 
-								ValueField="SupplierId"
-								Filterable="true"></TelerikDropDownList>
-								<span>@CurrentSelectedSupplier.ContactNo</span><span>@CurrentSelectedSupplier.Address</span>*@
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="box box-primary card">
+							<div class="box-body">
+								<table class="table table-responsive-sm">
+									<thead>
+										<tr>
+											<th>Innvoice No</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<div class="form-group">
+													<input type="text" class="form-control" @bind-value="CurrentReceivedItem.InvoiceNo" />
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<table class="table table-responsive-sm">
+									<thead>
+										<tr>
+											<th>Supplier</th>
+											<th>Contact Person</th>
+											<th>Address</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<select class="form-control " @onchange="OnChangeSupplier" style="width: 100%;">
+													@foreach (var s in Suppliers)
+													{
+														<option value="@s.SupplierId">@s.SupplierName</option>
+													}
+												</select>
+											</td>
+											<td>
+												<span>@CurrentSelectedSupplier.ContactPerson - @CurrentSelectedSupplier.ContactNo</span>
+											</td>
+											<td>
+												<span>@CurrentSelectedSupplier.Address</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="box box-primary card">
+							<div class="box-body">
+								<div class="form-group">
+									<label>Transaction No</label>
+									<input type="text" disabled class="form-control" @bind-value="CurrentReceivedItem.ReceiveTransactionNo" />
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label>Trsanction No.</label>
-					<TelerikTextBox Enabled="false" @bind-Value="CurrentReceivedItem.ReceiveTransactionNo"></TelerikTextBox>
-				</div>
-				<div class="form-group">
-					<label>Invoice No.</label>
-					<TelerikTextBox Enabled="false" @bind-Value="CurrentReceivedItem.InvoiceNo"></TelerikTextBox>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="box box-primary card">
+							<div class="box-body">
+								<table class="table table-responsive-sm">
+									<thead>
+										<tr>
+											<td>Location</td>
+											<td>Item</td>
+											<td>Cost</td>
+											<td>Qty</td>
+											<td></td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<TelerikDropDownList 
+													Data="Locations" 
+													TextField="LocationName" 
+													ValueField="LocationId" 
+													DefaultText="-"
+													Filterable="true"
+													@bind-Value="CurrentReceivedItemDetail.LocationId">
+												</TelerikDropDownList>
+											</td>
+											<td>
+												<TelerikDropDownList 
+													Data="Items" 
+													TextField="ItemCode" 
+													ValueField="ItemId" 
+													DefaultText="-"
+													Filterable="true"
+													@bind-Value="CurrentReceivedItemDetail.ItemId">
+														<ItemTemplate>
+															@((context as Item).ItemCode) @((context as Item).ItemDescription)
+														</ItemTemplate>
+												</TelerikDropDownList>
+											</td>
+											<td>
+												<div class="form-group">
+													<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Cost" />
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Qty" />
+												</div>
+											</td>
+											<td>
+												<button class="btn btn-sm btn-primary" @onclick="AddToReceivedItemDetailList"><i class="fa fa-plus"></i> Add</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="box-footer">
+								<div class="box box-primary card">
+									<div class="box-body">
+										<table class="table table-responsive-sm">
+											<thead>
+												<tr>
+													<td>Location</td>
+													<td>Item</td>
+													<td>Cost</td>
+													<td>Qty</td>
+													<td></td>
+												</tr>
+											</thead>
+											<tbody>
+												@foreach (var x in ReceivedItemDetailList)
+												{
+													<tr>
+														<td>
+															@{
+																var locationname = Locations.FirstOrDefault(s => s.LocationId == x.LocationId)?.LocationName;
+																<span>@locationname</span>
+															}
+														</td>
+														<td>
+															@{
+																var item = Items.FirstOrDefault(s => s.ItemId == x.ItemId);
+																<span>@item?.ItemCode @item?.ItemDescription</span>
+															}
+														</td>
+														<td>@x.Cost</td>
+														<td>@x.Qty</td>
+														<td>
+															<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReceivedItemDetailList(x.ReceivedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
+														</td>
+													</tr>
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -54,3 +188,9 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	div.card {
+	  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+</style>
