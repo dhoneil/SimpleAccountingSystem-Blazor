@@ -2,195 +2,206 @@
 
 <h3>Received Items</h3>
 
-<TelerikGrid Data="ReceivedItems" AutoGenerateColumns="true">
-	<GridToolBar>
-		<GridCommandButton OnClick="AddNewReceivedItem">+ Received Item</GridCommandButton>
-	</GridToolBar>
-</TelerikGrid>
 
-
-
-<div class="modal fade generalmodal" id="ReceiveItemmodal">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">×</span></button>
-				<h4 class="modal-title">@(CurrentReceivedItem.ReceivedItemId > 0 ? "Edit" : "+ New") Item</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-sm-8">
-						<div class="box box-primary card">
-							<div class="box-body">
-								<table class="table table-responsive-sm">
-									<thead>
-										<tr>
-											<th>Innvoice No</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="form-group">
-													<input type="text" class="form-control" @bind-value="CurrentReceivedItem.InvoiceNo" />
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<table class="table table-responsive-sm">
-									<thead>
-										<tr>
-											<th>Supplier</th>
-											<th>Contact Person</th>
-											<th>Address</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<select class="form-control " @onchange="OnChangeSupplier" style="width: 100%;">
-													@foreach (var s in Suppliers)
-													{
-														<option value="@s.SupplierId">@s.SupplierName</option>
-													}
-												</select>
-											</td>
-											<td>
-												<span>@CurrentSelectedSupplier.ContactPerson - @CurrentSelectedSupplier.ContactNo</span>
-											</td>
-											<td>
-												<span>@CurrentSelectedSupplier.Address</span>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="box box-primary card">
-							<div class="box-body">
-								<div class="form-group">
-									<label>Transaction No</label>
-									<input type="text" disabled class="form-control" @bind-value="CurrentReceivedItem.ReceiveTransactionNo" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="box box-primary card">
-							<div class="box-body">
-								<table class="table table-responsive-sm">
-									<thead>
-										<tr>
-											<td>Location</td>
-											<td>Item</td>
-											<td>Cost</td>
-											<td>Qty</td>
-											<td></td>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<TelerikDropDownList 
-													Data="Locations" 
-													TextField="LocationName" 
-													ValueField="LocationId" 
-													DefaultText="-"
-													Filterable="true"
-													@bind-Value="CurrentReceivedItemDetail.LocationId">
-												</TelerikDropDownList>
-											</td>
-											<td>
-												<TelerikDropDownList 
-													Data="Items" 
-													TextField="ItemCode" 
-													ValueField="ItemId" 
-													DefaultText="-"
-													Filterable="true"
-													@bind-Value="CurrentReceivedItemDetail.ItemId">
-														<ItemTemplate>
-															@((context as Item).ItemCode) @((context as Item).ItemDescription)
-														</ItemTemplate>
-												</TelerikDropDownList>
-											</td>
-											<td>
-												<div class="form-group">
-													<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Cost" />
-												</div>
-											</td>
-											<td>
-												<div class="form-group">
-													<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Qty" />
-												</div>
-											</td>
-											<td>
-												<button class="btn btn-sm btn-primary" @onclick="AddToReceivedItemDetailList"><i class="fa fa-plus"></i> Add</button>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div class="box-footer">
-								<div class="box box-primary card">
-									<div class="box-body">
-										<table class="table table-responsive-sm">
-											<thead>
-												<tr>
-													<td>Location</td>
-													<td>Item</td>
-													<td>Cost</td>
-													<td>Qty</td>
-													<td></td>
-												</tr>
-											</thead>
-											<tbody>
-												@foreach (var x in ReceivedItemDetailList)
+<div class="nav-tabs-custom">
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#receiveitem" data-toggle="tab">+ Receive Item(s)</a></li>
+		<li><a href="#list" data-toggle="tab"><i class="fa fa-list"></i> Items Received</a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane active" id="receiveitem">
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="box box-primary box">
+						<div class="box-body">
+							<table class="table table-responsive-sm">
+								<thead>
+									<tr>
+										<th>Innvoice No</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<div class="form-group">
+												<input type="text" class="form-control" @bind-value="CurrentReceivedItem.InvoiceNo" />
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<table class="table table-responsive-sm">
+								<thead>
+									<tr>
+										<th>Supplier</th>
+										<th>Contact Person</th>
+										<th>Address</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<select class="form-control" @onchange="OnChangeSupplier" style="width: 100%;">
+												@foreach (var s in Suppliers)
 												{
-													<tr>
-														<td>
-															@{
-																var locationname = Locations.FirstOrDefault(s => s.LocationId == x.LocationId)?.LocationName;
-																<span>@locationname</span>
-															}
-														</td>
-														<td>
-															@{
-																var item = Items.FirstOrDefault(s => s.ItemId == x.ItemId);
-																<span>@item?.ItemCode @item?.ItemDescription</span>
-															}
-														</td>
-														<td>@x.Cost</td>
-														<td>@x.Qty</td>
-														<td>
-															<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReceivedItemDetailList(x.ReceivedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
-														</td>
-													</tr>
+													<option value="@s.SupplierId">@s.SupplierName</option>
 												}
-											</tbody>
-										</table>
-									</div>
+											</select>
+										</td>
+										<td>
+											<span>@CurrentSelectedSupplier.ContactPerson - @CurrentSelectedSupplier.ContactNo</span>
+										</td>
+										<td>
+											<span>@CurrentSelectedSupplier.Address</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="box box-primary card">
+						<div class="box-body">
+							<div class="form-group">
+								<label>Transaction No</label>
+								<input type="text" disabled class="form-control" @bind-value="CurrentReceivedItem.ReceiveTransactionNo" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-primary box">
+						<div class="box-body">
+							<table class="table table-responsive-sm">
+								<thead>
+									<tr>
+										<td>Location</td>
+										<td>Item</td>
+										<td>Cost</td>
+										<td>Qty</td>
+										<td></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<TelerikDropDownList
+												Data="Locations"
+												TextField="LocationName"
+												ValueField="LocationId"
+												DefaultText="-"
+												Filterable="true"
+												@bind-Value="CurrentReceivedItemDetail.LocationId">
+											</TelerikDropDownList>
+										</td>
+										<td>
+											<TelerikDropDownList
+												Data="Items"
+												TextField="ItemCode"
+												ValueField="ItemId"
+												DefaultText="-"
+												Filterable="true"
+												@bind-Value="CurrentReceivedItemDetail.ItemId">
+													<ItemTemplate>
+														@((context as Item).ItemCode) @((context as Item).ItemDescription)
+													</ItemTemplate>
+											</TelerikDropDownList>
+										</td>
+										<td>
+											<div class="form-group">
+												<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Cost" />
+											</div>
+										</td>
+										<td>
+											<div class="form-group">
+												<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Qty" />
+											</div>
+										</td>
+										<td>
+											<button class="btn btn-sm btn-primary" @onclick="AddToReceivedItemDetailList"><i class="fa fa-plus"></i> Add</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="box-footer">
+							<div class="box box-primary box">
+								<div class="box-body">
+									<table class="table table-responsive-sm">
+										<thead>
+											<tr>
+												<td>Location</td>
+												<td>Item</td>
+												<td>Cost</td>
+												<td>Qty</td>
+												<td></td>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var x in ReceivedItemDetailList)
+											{
+												<tr>
+													<td>
+														@{
+															var locationname = Locations.FirstOrDefault(s => s.LocationId == x.LocationId)?.LocationName;
+															<span>@locationname</span>
+														}
+													</td>
+													<td>
+														@{
+															var item = Items.FirstOrDefault(s => s.ItemId == x.ItemId);
+															<span>@item?.ItemCode @item?.ItemDescription</span>
+														}
+													</td>
+													<td>@x.Cost</td>
+													<td>@x.Qty</td>
+													<td>
+														<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReceivedItemDetailList(x.ReceivedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+								<div class="box-footer">
+									<button class="btn btn-sm btn-success" @onclick="SaveReceiveItem"><i class="fa fa-save"></i> Save</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
+		</div>
+		<div class="tab-pane" id="list">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-primary">
+						<div class="box-body">
+							<TelerikGrid Data="ReceivedItems" AutoGenerateColumns="false">
+								<GridToolBar>
+									<GridCommandButton Command="ExportExcel">Export Excel</GridCommandButton>
+								</GridToolBar>
+								<GridColumns>
+									<GridColumn Field="@nameof(ReceivedItem.ReceiveTransactionNo)" Title="Transaction No"></GridColumn>
+									<GridColumn Field="@nameof(ReceivedItem.InvoiceNo)" Title="Invoice No"></GridColumn>
+									<GridColumn Field="@nameof(ReceivedItem.Supplier.SupplierName)" Title="Supplier"></GridColumn>
+									<GridColumn Field="@nameof(ReceivedItem.DateReceived)" Title="Date Received"></GridColumn>
+									<GridColumn Field="@nameof(ReceivedItem.Remarks)" Title="Remarks"></GridColumn>
+								</GridColumns>
+							</TelerikGrid>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <style>
-	div.card {
+	div.box {
 	  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
 </style>

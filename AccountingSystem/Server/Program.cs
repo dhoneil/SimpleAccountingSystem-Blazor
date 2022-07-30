@@ -14,6 +14,14 @@ builder.Services.AddDbContext<accounting_systemContext>(options => options.UseSq
 builder.Services.AddTelerikBlazor();
 
 
+builder.Services.AddRazorPages().AddNewtonsoftJson();
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddNewtonsoftJson(x =>
+{
+    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+});
+
 
 
 builder.Services.AddControllersWithViews();

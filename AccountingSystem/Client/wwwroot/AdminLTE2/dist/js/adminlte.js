@@ -6,7 +6,7 @@
 *
 * @author Colorlib
 * @support <https://github.com/ColorlibHQ/AdminLTE/issues>
-* @version v2.4.18
+* @version 2.4.17
 * @repository git://github.com/ColorlibHQ/AdminLTE.git
 * @license MIT <http://opensource.org/licenses/MIT>
 */
@@ -909,7 +909,7 @@ throw new Error('AdminLTE requires jQuery')
     }
 
     parent.addClass(ClassName.open);
-    tree.stop().slideDown(this.options.animationSpeed, function () {
+    tree.slideDown(this.options.animationSpeed, function () {
       $(this.element).trigger(expandedEvent);
       parent.height('auto');
     }.bind(this));
@@ -920,7 +920,7 @@ throw new Error('AdminLTE requires jQuery')
 
     //tree.find(Selector.open).removeClass(ClassName.open);
     parentLi.removeClass(ClassName.open);
-    tree.stop().slideUp(this.options.animationSpeed, function () {
+    tree.slideUp(this.options.animationSpeed, function () {
       //tree.find(Selector.open + ' > ' + Selector.treeview).slideUp();
       $(this.element).trigger(collapsedEvent);
 

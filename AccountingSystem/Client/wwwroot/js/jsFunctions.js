@@ -1,4 +1,7 @@
 ﻿(function () {
+    window.Select2Init = function () {
+        $('.select2').select2()
+    },
     window.Select2Trigger = function (modalid) {
         $('.select2').select2({
             dropdownParent: $(`#${modalid}`)
