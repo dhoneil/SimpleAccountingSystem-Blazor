@@ -21,6 +21,7 @@ namespace AccountingSystem.Server.DataAccess
         public virtual DbSet<Brand> Brands { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Contract> Contracts { get; set; } = null!;
+        public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<Expense> Expenses { get; set; } = null!;
         public virtual DbSet<Item> Items { get; set; } = null!;
         public virtual DbSet<ItemTransaction> ItemTransactions { get; set; } = null!;
@@ -72,6 +73,11 @@ namespace AccountingSystem.Server.DataAccess
                 entity.Property(e => e.DateStart).HasColumnType("datetime");
 
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+            });
+
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.ToTable("Customer");
             });
 
             modelBuilder.Entity<Expense>(entity =>

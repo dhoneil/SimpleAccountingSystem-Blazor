@@ -24,11 +24,6 @@ namespace AccountingSystem.Client.Pages
         public string CurrentTransactionNo { get; set; } = string.Empty;
 
 
-        //========test
-        public List<Customer> Customers { get; set; } = new();
-        //========test
-
-
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
