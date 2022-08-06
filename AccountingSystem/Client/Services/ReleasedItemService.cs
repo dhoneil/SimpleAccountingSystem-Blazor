@@ -13,7 +13,7 @@ namespace AccountingSystem.Client.Services
         Task<ReleasedItem> AddNewReleaseItem(ReleasedItem entity);
         Task<bool> AddNewReleaseItemDetails(List<ReleasedItemDetail> entity);
         Task<ReleasedItem> GetLastReleaseItem();
-        Task<List<ReleasedItemDetail>> GetReleasedItemDetailsAsync(int Releaseditemid);
+        Task<List<ReleasedItemDetail>> GetReleasedItemDetailsAsync(int Releaseditemid = 0);
     }
 
     public class ReleasedItemService : IReleasedItemService
@@ -67,7 +67,7 @@ namespace AccountingSystem.Client.Services
             return res;
         }
 
-        public async Task<List<ReleasedItemDetail>> GetReleasedItemDetailsAsync(int Releaseditemid)
+        public async Task<List<ReleasedItemDetail>> GetReleasedItemDetailsAsync(int Releaseditemid = 0)
         {
             var res = await ApiWrapper.Get<List<ReleasedItemDetail>>($"{_http.BaseAddress.AbsoluteUri}api/ReleasedItem/getReleasedItemDetails/{Releaseditemid}");
             return res;

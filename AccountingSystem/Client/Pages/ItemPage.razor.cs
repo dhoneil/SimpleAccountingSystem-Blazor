@@ -16,6 +16,8 @@ namespace AccountingSystem.Client.Pages
         [Inject] IPartNumberService PartNumberService { get; set; } = null!;
         [Inject] IUomService UomService { get; set; } = null!;
         [Inject] IItemService ItemService { get; set; } = null!;
+        [Inject] IReceivedItemService ReceivedItemService { get; set; } = null!;
+        [Inject] IReleasedItemService ReleasedItemService { get; set; } = null!;
         public List<Item> Items { get; set; } = new();
         public List<ItemTransaction> ItemTransactions { get; set; } = new();
         public List<PartNumber> PartNumbers { get; set; } = new();
@@ -24,6 +26,8 @@ namespace AccountingSystem.Client.Pages
         public List<Brand> Brands { get; set; } = new();
         public Item CurrentItem { get; set; } = new();
         public bool IsValidSubmit { get; set; } = true;
+        public List<ReceivedItemDetail> ReceivedItemDetails { get; set; } = new();
+        public List<ReleasedItemDetail> ReleasedItemDetails { get; set; } = new();
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -39,6 +43,19 @@ namespace AccountingSystem.Client.Pages
             ItemTransactions = await ItemTransactionService.GetItemTransactions();
         }
 
+        public async Task ShowItemLedger(GridCommandEventArgs args)
+        {
+            var item = (Item)args.Item;
+            var item_id = item.ItemId;
+            var received_items_all = await ReceivedItemService.GetReceivedItemDetailsAsync(0);
+            var released_items_all = await ReleasedItemService.GetReleasedItemDetailsAsync(0);
+            var received_items = received_items_all.Where(s => s.ItemId == item_id).ToList();
+            var released_items = released_items_all.Where(s => s.ItemId == item_id).ToList();
+            ReceivedItemDetails = received_items;
+            ReleasedItemDetails = released_items;
+            await ModalAction("ItemLedgerModal", "show");
+        }
+
         public decimal GetItemFinalCount(int itemid)
         {
             var item_transactions_count_in = ItemTransactions.Where(s => s.ItemId == itemid && s.TransactionTypeId == 1).Sum(s => s.Qty);
@@ -47,17 +64,17 @@ namespace AccountingSystem.Client.Pages
             return (decimal)final_count;
         }
 
-        async Task ModalAction(string action)
+        async Task ModalAction(string modalid,string action)
         {
             //await JS.InvokeVoidAsync("ModalAction", "Itemmodal", action);
-            await HelperService.ModalAction("Itemmodal", action);
+            await HelperService.ModalAction($"{modalid}", action);
         }
 
         public async Task AddNewLocation()
         {
             IsValidSubmit = true;
             CurrentItem = new();
-            await ModalAction("show");
+            await ModalAction("ItemModal","show");
         }
 
         public async Task SaveItem()
@@ -97,7 +114,7 @@ namespace AccountingSystem.Client.Pages
 
             CurrentItem = new();
             await LoadData();
-            await ModalAction("hide");
+            await ModalAction("ItemModal", "hide");
         }
 
         public async Task EditItem(GridCommandEventArgs args)
@@ -105,7 +122,7 @@ namespace AccountingSystem.Client.Pages
             var item = (Item)args.Item;
             var locationid = item.ItemId;
             CurrentItem = await ItemService.GetDetails(locationid);
-            await ModalAction("show");
+            await ModalAction("ItemModal","show");
         }
     }
 }

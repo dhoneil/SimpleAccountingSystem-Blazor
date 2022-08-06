@@ -13,7 +13,7 @@ namespace AccountingSystem.Client.Services
         Task<ReceivedItem> AddNewReceiveItem(ReceivedItem entity);
         Task<bool> AddNewReceiveItemDetails(List<ReceivedItemDetail> entity);
         Task<ReceivedItem> GetLastReceiveItem();
-        Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid);
+        Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid = 0);
     }
 
     public class ReceivedItemService : IReceivedItemService
@@ -67,7 +67,7 @@ namespace AccountingSystem.Client.Services
             return res;
         }
 
-        public async Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid)
+        public async Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid = 0)
         {
             var res = await ApiWrapper.Get<List<ReceivedItemDetail>>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/getReceivedItemDetails/{receiveditemid}");
             return res;

@@ -89,10 +89,12 @@ namespace AccountingSystem.Server.Controllers
         }
 
         [HttpGet, Route("api/ReceivedItem/getReceivedItemDetails/{receiveditemid}")]
-        public async Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid)
+        public async Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid = 0)
         {
-            var res = await _context.ReceivedItemDetails.Where(s=>s.ReceivedItemId == receiveditemid).ToListAsync();
-            return res;
+            IQueryable<ReceivedItemDetail> query = _context.ReceivedItemDetails;
+            if(receiveditemid > 0)
+                query = query.Where(x => x.ReceivedItemId == receiveditemid);
+            return query.ToList();
         }
     }
 }

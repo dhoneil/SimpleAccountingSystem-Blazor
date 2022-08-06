@@ -89,10 +89,12 @@ namespace AccountingSystem.Server.Controllers
         }
 
         [HttpGet, Route("api/ReleasedItem/getReleasedItemDetails/{Releaseditemid}")]
-        public async Task<List<ReleasedItemDetail>> GetReleasedItemDetailsAsync(int Releaseditemid)
+        public async Task<List<ReleasedItemDetail>> GetReleasedItemDetailsAsync(int Releaseditemid = 0)
         {
-            var res = await _context.ReleasedItemDetails.Where(s=>s.ReleasedItemId == Releaseditemid).ToListAsync();
-            return res;
+            IQueryable<ReleasedItemDetail> src = _context.ReleasedItemDetails;
+            if (Releaseditemid > 0)
+                src = src.Where(s => s.ReleasedItemId == Releaseditemid);
+            return src.ToList();
         }
     }
 }
