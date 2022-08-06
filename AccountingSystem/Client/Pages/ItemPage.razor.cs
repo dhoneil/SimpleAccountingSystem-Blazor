@@ -10,12 +10,14 @@ namespace AccountingSystem.Client.Pages
     {
         [Inject] IJSRuntime JS { get; set; } = null!;
         [Inject] IHelperService HelperService { get; set; } = null!;
+        [Inject] IItemTransactionService ItemTransactionService { get; set; } = null!;
         [Inject] IBrandService BrandService { get; set; } = null!;
         [Inject] ICategoryService CategoryService { get; set; } = null!;
         [Inject] IPartNumberService PartNumberService { get; set; } = null!;
         [Inject] IUomService UomService { get; set; } = null!;
         [Inject] IItemService ItemService { get; set; } = null!;
         public List<Item> Items { get; set; } = new();
+        public List<ItemTransaction> ItemTransactions { get; set; } = new();
         public List<PartNumber> PartNumbers { get; set; } = new();
         public List<Uom> Uoms { get; set; } = new();
         public List<Category> Categories { get; set; } = new();
@@ -34,8 +36,17 @@ namespace AccountingSystem.Client.Pages
             Uoms = await UomService.GetUoms();
             PartNumbers = await PartNumberService.GetPartNumbers();
             Items = await ItemService.GetItems();
+            ItemTransactions = await ItemTransactionService.GetItemTransactions();
         }
-        
+
+        public decimal GetItemFinalCount(int itemid)
+        {
+            var item_transactions_count_in = ItemTransactions.Where(s => s.ItemId == itemid && s.TransactionTypeId == 1).Sum(s => s.Qty);
+            var item_transactions_count_out = ItemTransactions.Where(s => s.ItemId == itemid && s.TransactionTypeId == 2).Sum(s => s.Qty);
+            var final_count = item_transactions_count_in - item_transactions_count_out;
+            return (decimal)final_count;
+        }
+
         async Task ModalAction(string action)
         {
             //await JS.InvokeVoidAsync("ModalAction", "Itemmodal", action);

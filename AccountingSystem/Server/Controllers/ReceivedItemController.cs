@@ -36,21 +36,23 @@ namespace AccountingSystem.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
 
-            var res = await _context.ReceivedItems.AddAsync(entity);
-            if (res is null)
+            await _context.ReceivedItems.AddAsync(entity);
+            var res = await _context.SaveChangesAsync();
+            if (res <= 0)
                 return BadRequest("Failed during inserting to database");
 
             return Ok(res);
         }
 
-        [HttpPost, Route("api/ReceivedItem/AddNewReceiveItemDetail")]
-        public async Task<IActionResult> AddNewReceiveItemDetail([FromBody] ReceivedItemDetail entity)
+        [HttpPost, Route("api/ReceivedItem/AddNewReceiveItemDetails")]
+        public async Task<IActionResult> AddNewReceiveItemDetails([FromBody] List<ReceivedItemDetail> entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
 
-            var res = await _context.ReceivedItemDetails.AddAsync(entity);
-            if (res is null)
+            await _context.ReceivedItemDetails.AddRangeAsync(entity);
+            var res = await _context.SaveChangesAsync();
+            if (res <= 0)
                 return BadRequest("Failed during inserting to database");
 
             return Ok(res);
@@ -83,6 +85,13 @@ namespace AccountingSystem.Server.Controllers
         public async Task<ReceivedItem> getLastReceiveItem()
         {
             var res = await _context.ReceivedItems.OrderByDescending(s => s.ReceivedItemId).FirstOrDefaultAsync();
+            return res;
+        }
+
+        [HttpGet, Route("api/ReceivedItem/getReceivedItemDetails/{receiveditemid}")]
+        public async Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid)
+        {
+            var res = await _context.ReceivedItemDetails.Where(s=>s.ReceivedItemId == receiveditemid).ToListAsync();
             return res;
         }
     }

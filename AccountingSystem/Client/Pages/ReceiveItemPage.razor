@@ -11,7 +11,7 @@
 	<div class="tab-content">
 		<div class="tab-pane active" id="receiveitem">
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<div class="box box-primary box">
 						<div class="box-body">
 							<table class="table table-responsive-sm">
@@ -41,18 +41,32 @@
 								<tbody>
 									<tr>
 										<td>
-											<select class="form-control" @onchange="OnChangeSupplier" style="width: 100%;">
-												@foreach (var s in Suppliers)
+										<TelerikComboBox @bind-Value="@CurrentSelectedSupplier.SupplierId"
+														OnChange="OnChangeSupplier"
+														Data="@Suppliers"
+														Placeholder="Suppliers"
+														TextField="@nameof(Supplier.SupplierName)"
+														ValueField="@nameof(Supplier.SupplierId)"
+														Filterable="true"
+														Id="supplier"
+														Width="100%">
+										</TelerikComboBox>
+										</td>
+										<td>
+											@{
+												if (CurrentSelectedSupplier.SupplierId > 0)
 												{
-													<option value="@s.SupplierId">@s.SupplierName</option>
+													<span>@CurrentSelectedSupplier.SupplierName - @CurrentSelectedSupplier.ContactNo</span>
 												}
-											</select>
+											}
 										</td>
 										<td>
-											<span>@CurrentSelectedSupplier.ContactPerson - @CurrentSelectedSupplier.ContactNo</span>
-										</td>
-										<td>
-											<span>@CurrentSelectedSupplier.Address</span>
+											@{
+												if (CurrentSelectedSupplier.SupplierId > 0)
+												{
+													<span>@CurrentSelectedSupplier?.Address</span>
+												}
+											}
 										</td>
 									</tr>
 								</tbody>
@@ -60,19 +74,69 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-6">
 					<div class="box box-primary card">
 						<div class="box-body">
 							<div class="form-group">
 								<label>Transaction No</label>
 								<input type="text" disabled class="form-control" @bind-value="CurrentReceivedItem.ReceiveTransactionNo" />
 							</div>
+							<div class="form-group">
+								<label>Date Received</label>
+								<input type="date" class="form-control" @bind-value="CurrentReceivedItem.DateReceived" />
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12">
+				<div class="col-sm-6">
+					<div class="box box-primary">
+						<div class="box-body">
+							<div class="row">
+								<div class="form-group col-sm-6">
+									<label for="">Location</label>
+									<TelerikComboBox @bind-Value="@CurrentReceivedItemDetail.LocationId"
+												    OnChange="OnChangeLocation"
+													Data="@Locations"
+													Placeholder="Locations"
+													TextField="@nameof(Location.LocationName)"
+													ValueField="@nameof(Location.LocationId)"
+													Filterable="true"
+													Id="location"
+													Width="100%">
+									</TelerikComboBox>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="">Item</label>
+									<TelerikComboBox @bind-Value="@CurrentReceivedItemDetail.ItemId"
+													Data="@Items"
+													Placeholder="Items"
+													TextField="@nameof(Item.ItemCode)"
+													ValueField="@nameof(Item.ItemId)"
+													Filterable="true"
+													Id="items"
+													Width="100%">
+									</TelerikComboBox>
+								</div>
+							</div>
+							<div class="row">
+								<di class="form-group col-sm-6">
+									<label for="">Cost</label>
+									<TelerikNumericTextBox @bind-Value="@CurrentReceivedItemDetail.Cost"></TelerikNumericTextBox>
+								</di>
+								<di class="form-group col-sm-6">
+									<label for="">Qty</label>
+									<TelerikNumericTextBox @bind-Value="@CurrentReceivedItemDetail.Qty"></TelerikNumericTextBox>
+								</di>
+							</div>
+						</div>
+						<div class="box-footer">
+							<button class="btn btn-sm btn-primary pull-right" @onclick="AddToReceivedItemDetailList"><i class="fa fa-arrow-right"></i> Add Item</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
 					<div class="box box-primary box">
 						<div class="box-body">
 							<table class="table table-responsive-sm">
@@ -86,90 +150,54 @@
 									</tr>
 								</thead>
 								<tbody>
+									@if (!ReceivedItemDetailList.Any())
+									{
+										<tr>
+											<td colspan="5">
+												<center>No items added...</center>
+											</td>
+										</tr>
+									}
+									else
+									{
+										@foreach (var x in ReceivedItemDetailList)
+										{
+											<tr>
+												<td>
+													@{
+														var locationname = Locations.FirstOrDefault(s => s.LocationId == x.LocationId)?.LocationName;
+														<span>@locationname</span>
+													}
+												</td>
+												<td>
+													@{
+														var item = Items.FirstOrDefault(s => s.ItemId == x.ItemId);
+														<span>@item?.ItemCode @item?.ItemDescription</span>
+													}
+												</td>
+												<td>@x.Cost</td>
+												<td>@x.Qty</td>
+												<td>
+													<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReceivedItemDetailList(x.ReceivedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
+												</td>
+											</tr>
+										}
+									}
+								</tbody>
+								<tfoot>
 									<tr>
-										<td>
-											<TelerikDropDownList
-												Data="Locations"
-												TextField="LocationName"
-												ValueField="LocationId"
-												DefaultText="-"
-												Filterable="true"
-												@bind-Value="CurrentReceivedItemDetail.LocationId">
-											</TelerikDropDownList>
-										</td>
-										<td>
-											<TelerikDropDownList
-												Data="Items"
-												TextField="ItemCode"
-												ValueField="ItemId"
-												DefaultText="-"
-												Filterable="true"
-												@bind-Value="CurrentReceivedItemDetail.ItemId">
-													<ItemTemplate>
-														@((context as Item).ItemCode) @((context as Item).ItemDescription)
-													</ItemTemplate>
-											</TelerikDropDownList>
-										</td>
-										<td>
+										<td colspan="5">
 											<div class="form-group">
-												<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Cost" />
+												<label for="">Remarks</label>
+												<input type="text" class="form-control" @bind-value="CurrentReceivedItem.Remarks" />
 											</div>
-										</td>
-										<td>
-											<div class="form-group">
-												<input type="text" class="form-control" @bind-value="CurrentReceivedItemDetail.Qty" />
-											</div>
-										</td>
-										<td>
-											<button class="btn btn-sm btn-primary" @onclick="AddToReceivedItemDetailList"><i class="fa fa-plus"></i> Add</button>
 										</td>
 									</tr>
-								</tbody>
+								</tfoot>
 							</table>
 						</div>
 						<div class="box-footer">
-							<div class="box box-primary box">
-								<div class="box-body">
-									<table class="table table-responsive-sm">
-										<thead>
-											<tr>
-												<td>Location</td>
-												<td>Item</td>
-												<td>Cost</td>
-												<td>Qty</td>
-												<td></td>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach (var x in ReceivedItemDetailList)
-											{
-												<tr>
-													<td>
-														@{
-															var locationname = Locations.FirstOrDefault(s => s.LocationId == x.LocationId)?.LocationName;
-															<span>@locationname</span>
-														}
-													</td>
-													<td>
-														@{
-															var item = Items.FirstOrDefault(s => s.ItemId == x.ItemId);
-															<span>@item?.ItemCode @item?.ItemDescription</span>
-														}
-													</td>
-													<td>@x.Cost</td>
-													<td>@x.Qty</td>
-													<td>
-														<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReceivedItemDetailList(x.ReceivedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
-													</td>
-												</tr>
-											}
-										</tbody>
-									</table>
-								</div>
-								<div class="box-footer">
-									<button class="btn btn-sm btn-success" @onclick="SaveReceiveItem"><i class="fa fa-save"></i> Save</button>
-								</div>
-							</div>
+							<button class="btn btn-sm btn-success pull-right" @onclick="SaveReceiveItem"><i class="fa fa-save"></i> Save</button>
 						</div>
 					</div>
 				</div>
@@ -183,13 +211,25 @@
 							<TelerikGrid Data="ReceivedItems" AutoGenerateColumns="false">
 								<GridToolBar>
 									<GridCommandButton Command="ExportExcel">Export Excel</GridCommandButton>
+									<GridCommandButton OnClick="LoadData"><i class="fa fa-refresh"></i> Refresh</GridCommandButton>
 								</GridToolBar>
 								<GridColumns>
 									<GridColumn Field="@nameof(ReceivedItem.ReceiveTransactionNo)" Title="Transaction No"></GridColumn>
 									<GridColumn Field="@nameof(ReceivedItem.InvoiceNo)" Title="Invoice No"></GridColumn>
-									<GridColumn Field="@nameof(ReceivedItem.Supplier.SupplierName)" Title="Supplier"></GridColumn>
+									<GridColumn Field="@nameof(ReceivedItem.Supplier.SupplierName)" Title="Supplier">
+										<Template>
+											@{
+												var item = context as ReceivedItem;
+												var supppliername = Suppliers.FirstOrDefault(s=>s.SupplierId == item.SupplierId)?.SupplierName;
+												<span>@supppliername</span>
+											}
+										</Template>
+									</GridColumn>
 									<GridColumn Field="@nameof(ReceivedItem.DateReceived)" Title="Date Received"></GridColumn>
 									<GridColumn Field="@nameof(ReceivedItem.Remarks)" Title="Remarks"></GridColumn>
+									<GridCommandColumn>
+										<GridCommandButton OnClick="@ShowTransactionDetails">Details</GridCommandButton>
+									</GridCommandColumn>
 								</GridColumns>
 							</TelerikGrid>
 						</div>
@@ -200,8 +240,94 @@
 	</div>
 </div>
 
-<style>
-	div.box {
-	  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-	}
-</style>
+
+<div class="modal fade" id="receivedetailtransactionmodel">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">×</span></button>
+				<h4 class="modal-title">Transaction Details</h4>
+			</div>
+			<div class="modal-body">
+				<div class="box box-primary">
+					<div class="box-header">
+						<span>Overview</span>
+					</div>
+					<div class="box-body">
+						<div class="row">
+							<div class="col-sm-12">
+								<table class="@GlobalVariables.TableClass">
+									<thead>
+										<tr>
+											<th>Transaction No</th>
+											<th>Invoice No</th>
+											<th>Supplier</th>
+											<th>Date Received</th>
+											<th>Remarks</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>@CurrentReceivedItemToViewDetails.ReceiveTransactionNo</td>
+											<td>@CurrentReceivedItemToViewDetails.InvoiceNo</td>
+											<td>
+												@{
+													var supplier_id = CurrentReceivedItemToViewDetails.SupplierId;
+													var suppliername = Suppliers.FirstOrDefault(s=>s.SupplierId == supplier_id)?.SupplierName;
+													<span>@suppliername</span>
+												}
+											</td>
+											<td>@CurrentReceivedItemToViewDetails.DateReceived</td>
+											<td>@CurrentReceivedItemToViewDetails.Remarks</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="box box-primary">
+					<div class="box-header">
+						<span>Details</span>
+					</div>
+					<div class="box-body">
+						<div class="row">
+							<div class="col-sm-12">
+								<TelerikGrid Data="TransactionDetails" AutoGenerateColumns="false">
+									<GridColumns>
+										<GridColumn Field="@nameof(ReceivedItemDetail.LocationId)" Title="Location">
+											<Template>
+												@{
+													var detail = context as ReceivedItemDetail;
+													var locationname = Locations.FirstOrDefault(s=>s.LocationId == detail.LocationId)?.LocationName;
+													<span>@locationname</span>
+												}
+											</Template>
+										</GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.ItemId)" Title="Item">
+											<Template>
+												@{
+													var detail = context as ReceivedItemDetail;
+													var item = Items.FirstOrDefault(s=>s.ItemId == detail.ItemId);
+													<span>@item?.ItemCode @item?.ItemDescription</span>
+												}
+											</Template>
+										</GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.Qty)"></GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.Cost)"></GridColumn>
+									</GridColumns>
+								</TelerikGrid>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			@* <div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div> *@
+		</div>
+	</div>
+</div>
+

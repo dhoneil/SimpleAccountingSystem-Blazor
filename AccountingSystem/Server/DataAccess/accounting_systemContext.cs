@@ -23,12 +23,14 @@ namespace AccountingSystem.Server.DataAccess
         public virtual DbSet<Contract> Contracts { get; set; } = null!;
         public virtual DbSet<Expense> Expenses { get; set; } = null!;
         public virtual DbSet<Item> Items { get; set; } = null!;
+        public virtual DbSet<ItemTransaction> ItemTransactions { get; set; } = null!;
         public virtual DbSet<Location> Locations { get; set; } = null!;
         public virtual DbSet<PartNumber> PartNumbers { get; set; } = null!;
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; } = null!;
         public virtual DbSet<ReceivedItem> ReceivedItems { get; set; } = null!;
         public virtual DbSet<ReceivedItemDetail> ReceivedItemDetails { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
+        public virtual DbSet<TransactionType> TransactionTypes { get; set; } = null!;
         public virtual DbSet<Uom> Uoms { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -115,6 +117,21 @@ namespace AccountingSystem.Server.DataAccess
                     .HasConstraintName("FK_Item_Uom");
             });
 
+            modelBuilder.Entity<ItemTransaction>(entity =>
+            {
+                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.ItemTransactions)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_ItemTransactions_Item");
+
+                entity.HasOne(d => d.TransactionType)
+                    .WithMany(p => p.ItemTransactions)
+                    .HasForeignKey(d => d.TransactionTypeId)
+                    .HasConstraintName("FK_ItemTransactions_TransactionType");
+            });
+
             modelBuilder.Entity<Location>(entity =>
             {
                 entity.ToTable("Location");
@@ -187,6 +204,11 @@ namespace AccountingSystem.Server.DataAccess
             modelBuilder.Entity<Supplier>(entity =>
             {
                 entity.ToTable("Supplier");
+            });
+
+            modelBuilder.Entity<TransactionType>(entity =>
+            {
+                entity.ToTable("TransactionType");
             });
 
             modelBuilder.Entity<Uom>(entity =>

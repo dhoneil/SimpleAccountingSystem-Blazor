@@ -7,6 +7,7 @@ namespace AccountingSystem.Shared.Models
     {
         public Item()
         {
+            ItemTransactions = new HashSet<ItemTransaction>();
             ReceivedItemDetails = new HashSet<ReceivedItemDetail>();
         }
 
@@ -25,6 +26,7 @@ namespace AccountingSystem.Shared.Models
         public virtual Category? Category { get; set; }
         public virtual PartNumber? PartNumber { get; set; }
         public virtual Uom? Uom { get; set; }
+        public virtual ICollection<ItemTransaction> ItemTransactions { get; set; }
         public virtual ICollection<ReceivedItemDetail> ReceivedItemDetails { get; set; }
     }
 }

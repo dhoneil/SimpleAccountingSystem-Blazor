@@ -11,8 +11,9 @@ namespace AccountingSystem.Client.Services
         Task<ReceivedItem> GetDetails(int id);
         Task<bool> UpdateItem(ReceivedItem entity);
         Task<ReceivedItem> AddNewReceiveItem(ReceivedItem entity);
-        Task<bool> AddNewReceiveItemDetail(ReceivedItemDetail entity);
+        Task<bool> AddNewReceiveItemDetails(List<ReceivedItemDetail> entity);
         Task<ReceivedItem> GetLastReceiveItem();
+        Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid);
     }
 
     public class ReceivedItemService : IReceivedItemService
@@ -40,11 +41,11 @@ namespace AccountingSystem.Client.Services
             return res;
         }
 
-        public async Task<bool> AddNewReceiveItemDetail(ReceivedItemDetail entity)
+        public async Task<bool> AddNewReceiveItemDetails(List<ReceivedItemDetail> entity)
         {
             //var res = await ApiWrapper.Post<ReceivedItemDetail>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/AddNewReceiveItemDetail", entity);
             //return res;
-            var result = await _http.PostAsJsonAsync("api/ReceivedItem/AddNewReceiveItemDetail", entity);
+            var result = await _http.PostAsJsonAsync("api/ReceivedItem/AddNewReceiveItemDetails", entity);
             return result.IsSuccessStatusCode;
         }
 
@@ -63,6 +64,12 @@ namespace AccountingSystem.Client.Services
         public async Task<ReceivedItem> GetLastReceiveItem()
         {
             var res = await ApiWrapper.Get<ReceivedItem>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/getLastReceiveItem");
+            return res;
+        }
+
+        public async Task<List<ReceivedItemDetail>> GetReceivedItemDetailsAsync(int receiveditemid)
+        {
+            var res = await ApiWrapper.Get<List<ReceivedItemDetail>>($"{_http.BaseAddress.AbsoluteUri}api/ReceivedItem/getReceivedItemDetails/{receiveditemid}");
             return res;
         }
     }
