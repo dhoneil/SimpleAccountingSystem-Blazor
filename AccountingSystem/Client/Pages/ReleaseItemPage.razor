@@ -1,15 +1,15 @@
-﻿@page "/receivedItems"
+﻿@page "/ReleasedItems"
 
-<h3>Received Items</h3>
+<h3>Released Items</h3>
 
 
 <div class="nav-tabs-custom">
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="#receiveitem" data-toggle="tab">+ Receive Item(s)</a></li>
-		<li><a href="#list" data-toggle="tab"><i class="fa fa-list"></i> Items Received</a></li>
+		<li class="active"><a href="#Releaseitem" data-toggle="tab">+ Release Item(s)</a></li>
+		<li><a href="#list" data-toggle="tab"><i class="fa fa-list"></i> Items Released</a></li>
 	</ul>
 	<div class="tab-content">
-		<div class="tab-pane active" id="receiveitem">
+		<div class="tab-pane active" id="Releaseitem">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="box box-primary box">
@@ -24,7 +24,7 @@
 									<tr>
 										<td>
 											<div class="form-group">
-												<input type="text" class="form-control" @bind-value="CurrentReceivedItem.InvoiceNo" />
+												<input type="text" class="form-control" @bind-value="CurrentReleasedItem.InvoiceNo" />
 											</div>
 										</td>
 									</tr>
@@ -33,7 +33,7 @@
 							<table class="table table-responsive-sm">
 								<thead>
 									<tr>
-										<th>Supplier</th>
+										<th>Customer</th>
 										<th>Contact Person</th>
 										<th>Address</th>
 									</tr>
@@ -41,30 +41,30 @@
 								<tbody>
 									<tr>
 										<td>
-										<TelerikComboBox @bind-Value="@CurrentSelectedSupplier.SupplierId"
-														OnChange="OnChangeSupplier"
-														Data="@Suppliers"
-														Placeholder="Suppliers"
-														TextField="@nameof(Supplier.SupplierName)"
-														ValueField="@nameof(Supplier.SupplierId)"
+										<TelerikComboBox @bind-Value="@CurrentSelectedCustomer.CustomerId"
+														OnChange="OnChangeCustomer"
+														Data="@Customers"
+														Placeholder="Customers"
+														TextField="@nameof(Customer.CustomerName)"
+														ValueField="@nameof(Customer.CustomerId)"
 														Filterable="true"
-														Id="supplier"
+														Id="Customer"
 														Width="100%">
 										</TelerikComboBox>
 										</td>
 										<td>
 											@{
-												if (CurrentSelectedSupplier.SupplierId > 0)
+												if (CurrentSelectedCustomer.CustomerId > 0)
 												{
-													<span>@CurrentSelectedSupplier.SupplierName - @CurrentSelectedSupplier.ContactNo</span>
+													<span>@CurrentSelectedCustomer.CustomerName - @CurrentSelectedCustomer.ContactNo</span>
 												}
 											}
 										</td>
 										<td>
 											@{
-												if (CurrentSelectedSupplier.SupplierId > 0)
+												if (CurrentSelectedCustomer.CustomerId > 0)
 												{
-													<span>@CurrentSelectedSupplier?.Address</span>
+													<span>@CurrentSelectedCustomer?.ContactPerson</span>
 												}
 											}
 										</td>
@@ -79,11 +79,11 @@
 						<div class="box-body">
 							<div class="form-group">
 								<label>Transaction No</label>
-								<input type="text" disabled class="form-control" @bind-value="CurrentReceivedItem.ReceiveTransactionNo" />
+								<input type="text" disabled class="form-control" @bind-value="CurrentReleasedItem.ReleaseTransactionNo" />
 							</div>
 							<div class="form-group">
-								<label>Date Received</label>
-								<input type="date" class="form-control" @bind-value="CurrentReceivedItem.DateReceived" />
+								<label>Date Released</label>
+								<input type="date" class="form-control" @bind-value="CurrentReleasedItem.DateReleased" />
 							</div>
 						</div>
 					</div>
@@ -96,7 +96,7 @@
 							<div class="row">
 								<div class="form-group col-sm-6">
 									<label for="">Location</label>
-									<TelerikComboBox @bind-Value="@CurrentReceivedItemDetail.LocationId"
+									<TelerikComboBox @bind-Value="@CurrentReleasedItemDetail.LocationId"
 												    OnChange="OnChangeLocation"
 													Data="@Locations"
 													Placeholder="Locations"
@@ -109,7 +109,7 @@
 								</div>
 								<div class="form-group col-sm-6">
 									<label for="">Item</label>
-									<TelerikComboBox @bind-Value="@CurrentReceivedItemDetail.ItemId"
+									<TelerikComboBox @bind-Value="@CurrentReleasedItemDetail.ItemId"
 													Data="@Items"
 													Placeholder="Items"
 													TextField="@nameof(Item.ItemCode)"
@@ -123,16 +123,16 @@
 							<div class="row">
 								<di class="form-group col-sm-6">
 									<label for="">Cost</label>
-									<TelerikNumericTextBox @bind-Value="@CurrentReceivedItemDetail.Cost"></TelerikNumericTextBox>
+									<TelerikNumericTextBox @bind-Value="@CurrentReleasedItemDetail.Cost"></TelerikNumericTextBox>
 								</di>
 								<di class="form-group col-sm-6">
 									<label for="">Qty</label>
-									<TelerikNumericTextBox @bind-Value="@CurrentReceivedItemDetail.Qty"></TelerikNumericTextBox>
+									<TelerikNumericTextBox @bind-Value="@CurrentReleasedItemDetail.Qty"></TelerikNumericTextBox>
 								</di>
 							</div>
 						</div>
 						<div class="box-footer">
-							<button class="btn btn-sm btn-primary pull-right" @onclick="AddToReceivedItemDetailList"><i class="fa fa-arrow-right"></i> Add Item</button>
+							<button class="btn btn-sm btn-primary pull-right" @onclick="AddToReleasedItemDetailList"><i class="fa fa-arrow-right"></i> Add Item</button>
 						</div>
 					</div>
 				</div>
@@ -150,7 +150,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									@if (!ReceivedItemDetailList.Any())
+									@if (!ReleasedItemDetailList.Any())
 									{
 										<tr>
 											<td colspan="5">
@@ -160,7 +160,7 @@
 									}
 									else
 									{
-										@foreach (var x in ReceivedItemDetailList)
+										@foreach (var x in ReleasedItemDetailList)
 										{
 											<tr>
 												<td>
@@ -178,7 +178,7 @@
 												<td>@x.Cost</td>
 												<td>@x.Qty</td>
 												<td>
-													<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReceivedItemDetailList(x.ReceivedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
+													<button class="btn btn-sm btn-danger" @onclick="@(()=>RemoveFromReleasedItemDetailList(x.ReleasedItemDetailId))"><i class="fa fa-remove"></i> Remove</button>
 												</td>
 											</tr>
 										}
@@ -189,7 +189,7 @@
 										<td colspan="5">
 											<div class="form-group">
 												<label for="">Remarks</label>
-												<input type="text" class="form-control" @bind-value="CurrentReceivedItem.Remarks" />
+												<input type="text" class="form-control" @bind-value="CurrentReleasedItem.Remarks" />
 											</div>
 										</td>
 									</tr>
@@ -197,7 +197,7 @@
 							</table>
 						</div>
 						<div class="box-footer">
-							<button class="btn btn-sm btn-success pull-right" @onclick="SaveReceiveItem"><i class="fa fa-save"></i> Save</button>
+							<button class="btn btn-sm btn-success pull-right" @onclick="SaveReleaseItem"><i class="fa fa-save"></i> Save</button>
 						</div>
 					</div>
 				</div>
@@ -208,25 +208,25 @@
 				<div class="col-sm-12">
 					<div class="box box-primary">
 						<div class="box-body">
-							<TelerikGrid Data="ReceivedItems" AutoGenerateColumns="false">
+							<TelerikGrid Data="ReleasedItems" AutoGenerateColumns="false">
 								<GridToolBar>
 									<GridCommandButton Command="ExportExcel">Export Excel</GridCommandButton>
 									<GridCommandButton OnClick="LoadData"><i class="fa fa-refresh"></i> Refresh</GridCommandButton>
 								</GridToolBar>
 								<GridColumns>
-									<GridColumn Field="@nameof(ReceivedItem.ReceiveTransactionNo)" Title="Transaction No"></GridColumn>
-									<GridColumn Field="@nameof(ReceivedItem.InvoiceNo)" Title="Invoice No"></GridColumn>
-									<GridColumn Field="@nameof(ReceivedItem.Supplier.SupplierName)" Title="Supplier">
+									<GridColumn Field="@nameof(ReleasedItem.ReleaseTransactionNo)" Title="Transaction No"></GridColumn>
+									<GridColumn Field="@nameof(ReleasedItem.InvoiceNo)" Title="Invoice No"></GridColumn>
+									<GridColumn Field="@nameof(ReleasedItem.Customer.CustomerName)" Title="Customer">
 										<Template>
 											@{
-												var item = context as ReceivedItem;
-												var supppliername = Suppliers.FirstOrDefault(s=>s.SupplierId == item.SupplierId)?.SupplierName;
+												var item = context as ReleasedItem;
+												var supppliername = Customers.FirstOrDefault(s=>s.CustomerId == item.CustomerId)?.CustomerName;
 												<span>@supppliername</span>
 											}
 										</Template>
 									</GridColumn>
-									<GridColumn Field="@nameof(ReceivedItem.DateReceived)" Title="Date Received"></GridColumn>
-									<GridColumn Field="@nameof(ReceivedItem.Remarks)" Title="Remarks"></GridColumn>
+									<GridColumn Field="@nameof(ReleasedItem.DateReleased)" Title="Date Released"></GridColumn>
+									<GridColumn Field="@nameof(ReleasedItem.Remarks)" Title="Remarks"></GridColumn>
 									<GridCommandColumn>
 										<GridCommandButton OnClick="@ShowTransactionDetails">Details</GridCommandButton>
 									</GridCommandColumn>
@@ -241,7 +241,7 @@
 </div>
 
 
-<div class="modal fade" id="receivedetailtransactionmodel">
+<div class="modal fade" id="Releasedetailtransactionmodel">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -262,24 +262,24 @@
 										<tr>
 											<th>Transaction No</th>
 											<th>Invoice No</th>
-											<th>Supplier</th>
-											<th>Date Received</th>
+											<th>Customer</th>
+											<th>Date Released</th>
 											<th>Remarks</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<td>@CurrentReceivedItemToViewDetails.ReceiveTransactionNo</td>
-											<td>@CurrentReceivedItemToViewDetails.InvoiceNo</td>
+											<td>@CurrentReleasedItemToViewDetails.ReleaseTransactionNo</td>
+											<td>@CurrentReleasedItemToViewDetails.InvoiceNo</td>
 											<td>
 												@{
-													var supplier_id = CurrentReceivedItemToViewDetails.SupplierId;
-													var suppliername = Suppliers.FirstOrDefault(s=>s.SupplierId == supplier_id)?.SupplierName;
-													<span>@suppliername</span>
+													var Customer_id = CurrentReleasedItemToViewDetails.CustomerId;
+													var Customername = Customers.FirstOrDefault(s=>s.CustomerId == Customer_id)?.CustomerName;
+													<span>@Customername</span>
 												}
 											</td>
-											<td>@CurrentReceivedItemToViewDetails.DateReceived</td>
-											<td>@CurrentReceivedItemToViewDetails.Remarks</td>
+											<td>@CurrentReleasedItemToViewDetails.DateReleased</td>
+											<td>@CurrentReleasedItemToViewDetails.Remarks</td>
 										</tr>
 									</tbody>
 								</table>
@@ -296,26 +296,26 @@
 							<div class="col-sm-12">
 								<TelerikGrid Data="TransactionDetails" AutoGenerateColumns="false">
 									<GridColumns>
-										<GridColumn Field="@nameof(ReceivedItemDetail.LocationId)" Title="Location">
+										<GridColumn Field="@nameof(ReleasedItemDetail.LocationId)" Title="Location">
 											<Template>
 												@{
-													var detail = context as ReceivedItemDetail;
+													var detail = context as ReleasedItemDetail;
 													var locationname = Locations.FirstOrDefault(s=>s.LocationId == detail.LocationId)?.LocationName;
 													<span>@locationname</span>
 												}
 											</Template>
 										</GridColumn>
-										<GridColumn Field="@nameof(ReceivedItemDetail.ItemId)" Title="Item">
+										<GridColumn Field="@nameof(ReleasedItemDetail.ItemId)" Title="Item">
 											<Template>
 												@{
-													var detail = context as ReceivedItemDetail;
+													var detail = context as ReleasedItemDetail;
 													var item = Items.FirstOrDefault(s=>s.ItemId == detail.ItemId);
 													<span>@item?.ItemCode @item?.ItemDescription</span>
 												}
 											</Template>
 										</GridColumn>
-										<GridColumn Field="@nameof(ReceivedItemDetail.Qty)"></GridColumn>
-										<GridColumn Field="@nameof(ReceivedItemDetail.Cost)"></GridColumn>
+										<GridColumn Field="@nameof(ReleasedItemDetail.Qty)"></GridColumn>
+										<GridColumn Field="@nameof(ReleasedItemDetail.Cost)"></GridColumn>
 									</GridColumns>
 								</TelerikGrid>
 							</div>

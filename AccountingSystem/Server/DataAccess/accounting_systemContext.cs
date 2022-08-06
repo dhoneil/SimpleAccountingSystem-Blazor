@@ -30,6 +30,8 @@ namespace AccountingSystem.Server.DataAccess
         public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; } = null!;
         public virtual DbSet<ReceivedItem> ReceivedItems { get; set; } = null!;
         public virtual DbSet<ReceivedItemDetail> ReceivedItemDetails { get; set; } = null!;
+        public virtual DbSet<ReleasedItem> ReleasedItems { get; set; } = null!;
+        public virtual DbSet<ReleasedItemDetail> ReleasedItemDetails { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
         public virtual DbSet<TransactionType> TransactionTypes { get; set; } = null!;
         public virtual DbSet<Uom> Uoms { get; set; } = null!;
@@ -205,6 +207,46 @@ namespace AccountingSystem.Server.DataAccess
                     .WithMany(p => p.ReceivedItemDetails)
                     .HasForeignKey(d => d.ReceivedItemId)
                     .HasConstraintName("FK_ReceivedItemDetail_ReceivedItem");
+            });
+
+            modelBuilder.Entity<ReleasedItem>(entity =>
+            {
+                entity.ToTable("ReleasedItem");
+
+                entity.Property(e => e.DateReleased).HasColumnType("datetime");
+
+                entity.Property(e => e.ReleaseTransactionNo)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.ReleasedItems)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK_ReleasedItem_Customer");
+            });
+
+            modelBuilder.Entity<ReleasedItemDetail>(entity =>
+            {
+                entity.ToTable("ReleasedItemDetail");
+
+                entity.Property(e => e.Cost).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Qty).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.ReleasedItemDetails)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_ReleasedItemDetail_Item");
+
+                entity.HasOne(d => d.Location)
+                    .WithMany(p => p.ReleasedItemDetails)
+                    .HasForeignKey(d => d.LocationId)
+                    .HasConstraintName("FK_ReleasedItemDetail_Location");
+
+                entity.HasOne(d => d.ReleasedItem)
+                    .WithMany(p => p.ReleasedItemDetails)
+                    .HasForeignKey(d => d.ReleasedItemId)
+                    .HasConstraintName("FK_ReleasedItemDetail_ReleasedItem");
             });
 
             modelBuilder.Entity<Supplier>(entity =>

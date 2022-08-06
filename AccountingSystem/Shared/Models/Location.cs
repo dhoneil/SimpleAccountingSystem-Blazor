@@ -8,6 +8,7 @@ namespace AccountingSystem.Shared.Models
         public Location()
         {
             ReceivedItemDetails = new HashSet<ReceivedItemDetail>();
+            ReleasedItemDetails = new HashSet<ReleasedItemDetail>();
         }
 
         public int LocationId { get; set; }
@@ -17,5 +18,6 @@ namespace AccountingSystem.Shared.Models
 
         public virtual Category? Category { get; set; }
         public virtual ICollection<ReceivedItemDetail> ReceivedItemDetails { get; set; }
+        public virtual ICollection<ReleasedItemDetail> ReleasedItemDetails { get; set; }
     }
 }

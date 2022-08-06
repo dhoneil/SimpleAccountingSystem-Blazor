@@ -11,42 +11,42 @@ using Telerik.Blazor.Components;
 
 namespace AccountingSystem.Client.Pages
 {
-    public partial class ReceiveItemPage : ComponentBase
+    public partial class ReleaseItemPage : ComponentBase
     {
         [Inject] HttpClient _http { get; set; } = null!;
         [Inject] IHelperService HelperService { get; set; } = null!;
         [Inject] IJSRuntime JS { get; set; } = null!;
-        [Inject] IReceivedItemService ReceivedItemService { get; set; } = null!;
+        [Inject] IReleasedItemService ReleasedItemService { get; set; } = null!;
         [Inject] IItemService ItemService { get; set; } = null!;
-        [Inject] ISupplierService SupplierService { get; set; } = null!;
+        [Inject] ICustomerService CustomerService { get; set; } = null!;
         [Inject] ILocationService LocationService { get; set; } = null!;
         [Inject] IItemTransactionService ItemTransactionService { get; set; } = null!;
         [CascadingParameter]
         public DialogFactory Dialogs { get; set; }
 
-        public List<ReceivedItem> ReceivedItems { get; set; } = new();
-        public ReceivedItem CurrentReceivedItem { get; set; } = new();
-        public ReceivedItem CurrentReceivedItemToViewDetails { get; set; } = new();
+        public List<ReleasedItem> ReleasedItems { get; set; } = new();
+        public ReleasedItem CurrentReleasedItem { get; set; } = new();
+        public ReleasedItem CurrentReleasedItemToViewDetails { get; set; } = new();
         public List<Item> Items { get; set; } = new();
-        public List<Supplier> Suppliers { get; set; } = new();
+        public List<Customer> Customers { get; set; } = new();
         public List<Location> Locations { get; set; } = new();
-        public Supplier CurrentSelectedSupplier { get; set; } = new();
-        public List<ReceivedItemDetail> ReceivedItemDetailList { get; set; } = new();
-        public List<ReceivedItemDetail> TransactionDetails { get; set; } = new();
-        public ReceivedItemDetail CurrentReceivedItemDetail { get; set; } = new();
+        public Customer CurrentSelectedCustomer { get; set; } = new();
+        public List<ReleasedItemDetail> ReleasedItemDetailList { get; set; } = new();
+        public List<ReleasedItemDetail> TransactionDetails { get; set; } = new();
+        public ReleasedItemDetail CurrentReleasedItemDetail { get; set; } = new();
         public bool IsTransactionDetailModalVisible { get; set; } = false;
 
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
-            CurrentReceivedItemDetail.Qty = 1;
+            CurrentReleasedItemDetail.Qty = 1;
             GenerateTransactionNo();
         }
 
         void GenerateTransactionNo()
         {
-            CurrentReceivedItem.ReceiveTransactionNo = HelperService.GenerateTransactionNo(8);
-            CurrentReceivedItem.DateReceived = DateTime.Now;
+            CurrentReleasedItem.ReleaseTransactionNo = HelperService.GenerateTransactionNo(8);
+            CurrentReleasedItem.DateReleased = DateTime.Now;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -56,9 +56,9 @@ namespace AccountingSystem.Client.Pages
 
         public async Task LoadData()
         {
-            ReceivedItems = await ReceivedItemService.GetReceivedItems();
+            ReleasedItems = await ReleasedItemService.GetReleasedItems();
             Items = await ItemService.GetItems();
-            Suppliers = await SupplierService.GetSuppliers();
+            Customers = await CustomerService.GetCustomers();
             Locations = await LocationService.GetLocations();
         }
 
@@ -77,86 +77,86 @@ namespace AccountingSystem.Client.Pages
         {
             var item_id = (int)selecteditem;
             var item_details = await ItemService.GetDetails(item_id);
-            CurrentReceivedItemDetail.Cost = item_details.UnitCost;
+            CurrentReleasedItemDetail.Cost = item_details.UnitCost;
         }
 
-        public async Task AddNewReceivedItem()
+        public async Task AddNewReleasedItem()
         {
-            await HelperService.ModalAction("ReceiveItemmodal", "show");
+            await HelperService.ModalAction("ReleaseItemmodal", "show");
         }
 
-        public async Task OnChangeSupplier(object selectedsupplier)
+        public async Task OnChangeCustomer(object selectedCustomer)
         {
-            Suppliers = await SupplierService.GetSuppliers();
-            var selectedSuppId = (int)selectedsupplier;
-            CurrentSelectedSupplier = Suppliers.Where(s => s.SupplierId == selectedSuppId)?.FirstOrDefault();
+            Customers = await CustomerService.GetCustomers();
+            var selectedSuppId = (int)selectedCustomer;
+            CurrentSelectedCustomer = Customers.Where(s => s.CustomerId == selectedSuppId)?.FirstOrDefault();
         }
 
-        public async Task AddToReceivedItemDetailList()
+        public async Task AddToReleasedItemDetailList()
         {
             bool is_valid = true;
-            var is_already_added = ReceivedItemDetailList.Where(s=>s.ItemId == CurrentReceivedItemDetail.ItemId).Any();
+            var is_already_added = ReleasedItemDetailList.Where(s=>s.ItemId == CurrentReleasedItemDetail.ItemId).Any();
             if (is_already_added)
             {
                 await JS.InvokeVoidAsync("alert", "Item already added");
                 return;
             }
-            if (CurrentReceivedItemDetail.ItemId is null)
+            if (CurrentReleasedItemDetail.ItemId is null)
             {
                 await JS.InvokeVoidAsync("alert", "Please select an Item");
                 return;
             }
             if (is_valid)
             {
-                ReceivedItemDetailList.Add(CurrentReceivedItemDetail);
-                CurrentReceivedItemDetail = new();
-                CurrentReceivedItemDetail.Qty = 1;
+                ReleasedItemDetailList.Add(CurrentReleasedItemDetail);
+                CurrentReleasedItemDetail = new();
+                CurrentReleasedItemDetail.Qty = 1;
                 StateHasChanged();
             }
         }
 
-        public async Task RemoveFromReceivedItemDetailList(int detailid)
+        public async Task RemoveFromReleasedItemDetailList(int detailid)
         {
-            var toremove = ReceivedItemDetailList.FirstOrDefault(s => s.ReceivedItemDetailId == detailid);
-            ReceivedItemDetailList.Remove(toremove);
+            var toremove = ReleasedItemDetailList.FirstOrDefault(s => s.ReleasedItemDetailId == detailid);
+            ReleasedItemDetailList.Remove(toremove);
         }
 
-        public async Task SaveReceiveItem()
+        public async Task SaveReleaseItem()
         {
             bool isConfirmed = await Dialogs.ConfirmAsync("Are you sure to save this?",GlobalVariables.CONFIRMWINDOWTITLE);
 
             if (isConfirmed)
             {
                 //ADD TO RECIEVE ITEM TABLE
-                CurrentReceivedItem.SupplierId = CurrentSelectedSupplier.SupplierId;
-                await ReceivedItemService.CreateItem(CurrentReceivedItem);
-                var latest_inserted = await ReceivedItemService.GetLastReceiveItem();
+                CurrentReleasedItem.CustomerId = CurrentSelectedCustomer.CustomerId;
+                await ReleasedItemService.CreateItem(CurrentReleasedItem);
+                var latest_inserted = await ReleasedItemService.GetLastReleaseItem();
 
-                //ADD TO RECIEVE ITEM DETAIL TABLE
-                List<ReceivedItemDetail> receivedItemDetails = new List<ReceivedItemDetail>();
-                foreach (var x in ReceivedItemDetailList)
+                //ADD TO RELEASE ITEM DETAIL TABLE
+                List<ReleasedItemDetail> ReleasedItemDetails = new List<ReleasedItemDetail>();
+                foreach (var x in ReleasedItemDetailList)
                 {
-                    x.ReceivedItemId = latest_inserted.ReceivedItemId;
+                    x.ReleasedItemId = latest_inserted.ReleasedItemId;
                     x.LocationId = (x.LocationId is null ? 0 : x.LocationId);
-                    receivedItemDetails.Add(x);
+                    ReleasedItemDetails.Add(x);
                 }
-                await ReceivedItemService.AddNewReceiveItemDetails(receivedItemDetails);
+                await ReleasedItemService.AddNewReleaseItemDetails(ReleasedItemDetails);
 
                 //ADD TO ITEM TRANSACTION TABLE
                 List<ItemTransaction> ItemTransactions = new List<ItemTransaction>();
-                foreach (var y in receivedItemDetails)
+                foreach (var y in ReleasedItemDetails)
                 {
                     ItemTransaction transaction = new ItemTransaction();
                     transaction.ItemId = y.ItemId;
-                    transaction.TransactionTypeId = 1; // IN
+                    transaction.TransactionTypeId = 2; // OUT
                     transaction.Qty = y.Qty;
                     ItemTransactions.Add(transaction);
                 }
                 await ItemTransactionService.CreateManyItem(ItemTransactions);
 
-                CurrentReceivedItem = new();
-                ReceivedItemDetailList = new();
-                CurrentSelectedSupplier = new();
+                CurrentReleasedItem = new();
+                ReleasedItemDetailList = new();
+                CurrentSelectedCustomer = new();
                 GenerateTransactionNo();
             }
             else
@@ -167,11 +167,11 @@ namespace AccountingSystem.Client.Pages
 
         public async Task ShowTransactionDetails(GridCommandEventArgs args)
         {
-            var receiveitem = (ReceivedItem)args.Item;
-            var result = await ReceivedItemService.GetReceivedItemDetailsAsync(receiveitem.ReceivedItemId);
-            CurrentReceivedItemToViewDetails = receiveitem;
+            var Releaseitem = (ReleasedItem)args.Item;
+            var result = await ReleasedItemService.GetReleasedItemDetailsAsync(Releaseitem.ReleasedItemId);
+            CurrentReleasedItemToViewDetails = Releaseitem;
             TransactionDetails = result;
-            await HelperService.ModalAction("receivedetailtransactionmodel","show");
+            await HelperService.ModalAction("Releasedetailtransactionmodel","show");
         }
     }
 }

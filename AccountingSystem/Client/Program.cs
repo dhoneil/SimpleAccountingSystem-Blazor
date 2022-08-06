@@ -27,6 +27,7 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IReceivedItemService, ReceivedItemService>();
 builder.Services.AddScoped<IItemTransactionService, ItemTransactionService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IReleasedItemService, ReleasedItemService>();
 builder.Services.AddScoped<IHelperService, HelperService>();
 
 builder.Services.AddScoped<IDataService, DataService>();
