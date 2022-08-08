@@ -73,12 +73,12 @@
 		</GridColumn>
         <GridCommandColumn Width="150px" Locked="true" Title="Action">
             <GridCommandButton OnClick="EditItem" Icon="pencil"></GridCommandButton>
-            <GridCommandButton OnClick="ShowItemLedger"><i class="fa fa-list"></i> Item Ledger</GridCommandButton>
+            <GridCommandButton OnClick="ShowItemLedger" Title="Item Ledger"><i class="fa fa-list"></i></GridCommandButton>
         </GridCommandColumn>
     </GridColumns>
 </TelerikGrid>
 
-<div class="modal fade" id="Itemmodal">
+<div class="modal fade" id="ItemModal">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -195,7 +195,23 @@
 								<h3 class="box-title"><i class="fa fa-arrow-down"></i> Received Items</h3>
 							</div>
 							<div class="box-body">
-								<TelerikGrid Data="ReceivedItemDetails" AutoGenerateColumns="true"></TelerikGrid>
+								<TelerikGrid Data="ReceivedItemDetails" AutoGenerateColumns="false">
+									<GridColumns>
+										<GridColumn Field="@nameof(ReceivedItemDetail.ReceivedItemId)"></GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.LocationId)"></GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.ItemId)">
+											<Template>
+												@{
+													var item = context as ReceivedItemDetail;
+													var itemdetails = Items.FirstOrDefault(s=>s.ItemId == item.ItemId);
+													<span>@itemdetails?.ItemCode - @itemdetails?.ItemDescription</span>
+												}
+											</Template>
+										</GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.Qty)"></GridColumn>
+										<GridColumn Field="@nameof(ReceivedItemDetail.Cost)"></GridColumn>
+									</GridColumns>
+								</TelerikGrid>
 							</div>
 						</div>
 					</div>
@@ -205,15 +221,28 @@
 								<h3 class="box-title"><i class="fa fa-arrow-up"></i> Released Items</h3>
 							</div>
 							<div class="box-body">
-								<TelerikGrid Data="ReleasedItemDetails" AutoGenerateColumns="true"></TelerikGrid>
+								@*<TelerikGrid Data="ReleasedItemDetails" AutoGenerateColumns="true"></TelerikGrid>*@
+								<TelerikGrid Data="ReleasedItemDetails" AutoGenerateColumns="false">
+									<GridColumns>
+										<GridColumn Field="@nameof(ReleasedItemDetail.ReleasedItemId)"></GridColumn>
+										<GridColumn Field="@nameof(ReleasedItemDetail.LocationId)"></GridColumn>
+										<GridColumn Field="@nameof(ReleasedItemDetail.ItemId)">
+											<Template>
+												@{
+													var item = context as ReleasedItemDetail;
+													var itemdetails = Items.FirstOrDefault(s=>s.ItemId == item.ItemId);
+													<span>@itemdetails?.ItemCode - @itemdetails?.ItemDescription</span>
+												}
+											</Template>
+										</GridColumn>
+										<GridColumn Field="@nameof(ReleasedItemDetail.Qty)"></GridColumn>
+										<GridColumn Field="@nameof(ReleasedItemDetail.Cost)"></GridColumn>
+									</GridColumns>
+								</TelerikGrid>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" @onclick="SaveItem">Save changes</button>
 			</div>
 		</div>
 	</div>

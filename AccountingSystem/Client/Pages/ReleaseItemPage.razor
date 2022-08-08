@@ -110,6 +110,7 @@
 								<div class="form-group col-sm-6">
 									<label for="">Item</label>
 									<TelerikComboBox @bind-Value="@CurrentReleasedItemDetail.ItemId"
+													OnChange="OnChangeItem"
 													Data="@Items"
 													Placeholder="Items"
 													TextField="@nameof(Item.ItemCode)"
@@ -139,7 +140,7 @@
 				<div class="col-sm-6">
 					<div class="box box-primary box">
 						<div class="box-body">
-							<table class="table table-responsive-sm">
+							<table class="@GlobalVariables.TableClass">
 								<thead>
 									<tr>
 										<td>Location</td>
@@ -327,6 +328,95 @@
 				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary">Save changes</button>
 			</div> *@
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="ReViewReleaseItemModel">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="box box-solid">
+							<div class="box-header with-border">
+								<i class="fa fa-list"></i>
+								<h3 class="box-title">Release Details</h3>
+							</div>
+							<div class="box-body">
+								<dl class="dl-horizontal">
+									<dt>Invoice No.</dt>
+									<dd>@CurrentReleasedItem.InvoiceNo</dd>
+									<dt>Transaction No</dt>
+									<dd>@CurrentReleasedItem.ReleaseTransactionNo</dd>
+									<dt>Date Released</dt>
+									<dd>@CurrentReleasedItem.DateReleased</dd>
+									<dt>Customer</dt>
+									<dd>@CurrentSelectedCustomer.CustomerName</dd>
+								</dl>
+								<div>
+									<table class="@GlobalVariables.TableClass">
+										<thead>
+											<tr>
+												<td>Location</td>
+												<td>Item</td>
+												<td>Cost</td>
+												<td>Qty</td>
+											</tr>
+										</thead>
+										<tbody>
+											@if (!ReleasedItemDetailList.Any())
+											{
+												<tr>
+													<td colspan="5">
+														<center>No items added...</center>
+													</td>
+												</tr>
+											}
+											else
+											{
+												@foreach (var x in ReleasedItemDetailList)
+												{
+													<tr>
+														<td>
+															@{
+																var locationname = Locations.FirstOrDefault(s => s.LocationId == x.LocationId)?.LocationName;
+																<span>@locationname</span>
+															}
+														</td>
+														<td>
+															@{
+																var item = Items.FirstOrDefault(s => s.ItemId == x.ItemId);
+																<span>@item?.ItemCode @item?.ItemDescription</span>
+															}
+														</td>
+														<td>@x.Cost</td>
+														<td>@x.Qty</td>
+													</tr>
+												}
+											}
+										</tbody>
+										<tfoot>
+											<tr>
+												<td colspan="5">
+													<div class="form-group">
+														<label for="">Remarks</label>
+														<input type="text" class="form-control" @bind-value="CurrentReleasedItem.Remarks" />
+													</div>
+												</td>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="FinalSaveReleaseItem">Save changes</button>
+			</div>
 		</div>
 	</div>
 </div>

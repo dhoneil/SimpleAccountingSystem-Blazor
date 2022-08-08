@@ -110,6 +110,7 @@
 								<div class="form-group col-sm-6">
 									<label for="">Item</label>
 									<TelerikComboBox @bind-Value="@CurrentReceivedItemDetail.ItemId"
+													OnChange="OnChangeItem"
 													Data="@Items"
 													Placeholder="Items"
 													TextField="@nameof(Item.ItemCode)"

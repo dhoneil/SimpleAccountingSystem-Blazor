@@ -123,46 +123,45 @@ namespace AccountingSystem.Client.Pages
 
         public async Task SaveReleaseItem()
         {
-            bool isConfirmed = await Dialogs.ConfirmAsync("Are you sure to save this?",GlobalVariables.CONFIRMWINDOWTITLE);
+            await HelperService.ModalAction("ReViewReleaseItemModel","show");
+            //bool isConfirmed = await Dialogs.ConfirmAsync("Are you sure to save this?",GlobalVariables.CONFIRMWINDOWTITLE);
 
-            if (isConfirmed)
+            // await FinalSaveReleaseItem();
+        }
+
+        public async Task FinalSaveReleaseItem()
+        {
+            //ADD TO RECIEVE ITEM TABLE
+            CurrentReleasedItem.CustomerId = CurrentSelectedCustomer.CustomerId;
+            await ReleasedItemService.CreateItem(CurrentReleasedItem);
+            var latest_inserted = await ReleasedItemService.GetLastReleaseItem();
+
+            //ADD TO RELEASE ITEM DETAIL TABLE
+            List<ReleasedItemDetail> ReleasedItemDetails = new List<ReleasedItemDetail>();
+            foreach (var x in ReleasedItemDetailList)
             {
-                //ADD TO RECIEVE ITEM TABLE
-                CurrentReleasedItem.CustomerId = CurrentSelectedCustomer.CustomerId;
-                await ReleasedItemService.CreateItem(CurrentReleasedItem);
-                var latest_inserted = await ReleasedItemService.GetLastReleaseItem();
-
-                //ADD TO RELEASE ITEM DETAIL TABLE
-                List<ReleasedItemDetail> ReleasedItemDetails = new List<ReleasedItemDetail>();
-                foreach (var x in ReleasedItemDetailList)
-                {
-                    x.ReleasedItemId = latest_inserted.ReleasedItemId;
-                    x.LocationId = (x.LocationId is null ? 0 : x.LocationId);
-                    ReleasedItemDetails.Add(x);
-                }
-                await ReleasedItemService.AddNewReleaseItemDetails(ReleasedItemDetails);
-
-                //ADD TO ITEM TRANSACTION TABLE
-                List<ItemTransaction> ItemTransactions = new List<ItemTransaction>();
-                foreach (var y in ReleasedItemDetails)
-                {
-                    ItemTransaction transaction = new ItemTransaction();
-                    transaction.ItemId = y.ItemId;
-                    transaction.TransactionTypeId = 2; // OUT
-                    transaction.Qty = y.Qty;
-                    ItemTransactions.Add(transaction);
-                }
-                await ItemTransactionService.CreateManyItem(ItemTransactions);
-
-                CurrentReleasedItem = new();
-                ReleasedItemDetailList = new();
-                CurrentSelectedCustomer = new();
-                GenerateTransactionNo();
+                x.ReleasedItemId = latest_inserted.ReleasedItemId;
+                x.LocationId = (x.LocationId is null ? 0 : x.LocationId);
+                ReleasedItemDetails.Add(x);
             }
-            else
+            await ReleasedItemService.AddNewReleaseItemDetails(ReleasedItemDetails);
+
+            //ADD TO ITEM TRANSACTION TABLE
+            List<ItemTransaction> ItemTransactions = new List<ItemTransaction>();
+            foreach (var y in ReleasedItemDetails)
             {
-                return;
+                ItemTransaction transaction = new ItemTransaction();
+                transaction.ItemId = y.ItemId;
+                transaction.TransactionTypeId = 2; // OUT
+                transaction.Qty = y.Qty;
+                ItemTransactions.Add(transaction);
             }
+            await ItemTransactionService.CreateManyItem(ItemTransactions);
+
+            CurrentReleasedItem = new();
+            ReleasedItemDetailList = new();
+            CurrentSelectedCustomer = new();
+            GenerateTransactionNo();
         }
 
         public async Task ShowTransactionDetails(GridCommandEventArgs args)
