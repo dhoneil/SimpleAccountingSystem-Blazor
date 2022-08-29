@@ -47,6 +47,8 @@ namespace AccountingSystem.Server.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Branch>().ToTable(nameof(Branch), t => t.ExcludeFromMigrations());
+
             modelBuilder.Entity<Branch>(entity =>
             {
                 entity.ToTable("Branch");
